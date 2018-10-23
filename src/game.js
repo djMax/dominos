@@ -1,22 +1,30 @@
 import { Game, PlayerView } from 'boardgame.io/core';
 
+function isSamePiece(p1, p2) {
+  if (p1.values[0] === p2.values[0] && p1.values[1] === p2.values[1]) {
+    return true;
+  }
+  if (p1.values[1] === p2.values[0] && p1.values[0] === p2.values[1]) {
+    return true;
+  }
+  return false;
+}
+
+const allDominos = [];
+for (let firstHalf = 0; firstHalf <= 6; firstHalf += 1) {
+  for (let secondHalf = firstHalf; secondHalf <= 6; secondHalf += 1) {
+    allDominos.push({
+      values: [firstHalf, secondHalf],
+    });
+  }
+}
+
 export const Dominos = Game({
   name: 'Dominos',
   playerView: PlayerView.STRIP_SECRETS,
 
   setup(ctx) {
-    let pieces = [];
-    for (let firstHalf = 0; firstHalf <= 6; firstHalf += 1) {
-      for (let secondHalf = firstHalf; secondHalf <= 6; secondHalf += 1) {
-        pieces.push({
-          values: [firstHalf, secondHalf],
-          random: ctx.random.Number(),
-        });
-      }
-    }
-    pieces = pieces
-      .sort((a,b) => (a.random - b.random))
-      .map(p => ({ values: p.values }));
+    const pieces = allDominos; // ctx.random.Shuffle(allDominos);
     return {
       board: [],
       pieces: {
@@ -52,7 +60,7 @@ export const Dominos = Game({
         newState.players[player] = {
           ...newState.players[player],
           hand: newState.players[player].hand
-            .filter(p => (p.values[0] !== piece.values[0] || p.values[1] !== [piece.values[1]])),
+            .filter(p => !isSamePiece(p, piece)),
         };
       }
       return newState;
