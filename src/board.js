@@ -22,18 +22,19 @@ export class DominoBoard extends React.Component {
   }
 
   render() {
+    const { isActive } = this.props;
     return (
       <div className="board">
-        <div className="player p0">
+        <div className={`dplayer p0 ${isActive ? 'active' : ''}`}>
           {this.renderHand(0)}
         </div>
-        <div className="player p1">
+        <div className="dplayer p1">
           {this.renderHand(1)}
         </div>
-        <div className="player p2">
+        <div className="dplayer p2">
           {this.renderHand(2)}
         </div>
-        <div className="player p3">
+        <div className="dplayer p3">
           {this.renderHand(3)}
         </div>
       </div>

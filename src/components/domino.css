@@ -1,6 +1,6 @@
 div.hand {
   display: flex;
-  font-size: 10px;
+  justify-content: center;
 }
 
 div.domino {

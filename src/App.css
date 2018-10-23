@@ -34,24 +34,30 @@
 
 div.board {
 	border: 1px solid black;
-	width: 800px;
-	height: 800px;
+	width: 900px;
+	height: 900px;
 	position: relative;
 }
 
-div.player {
+div.dplayer {
 	position: absolute;
+	font-size: 10px;
+	height: 15em;
+}
+
+div.dplayer.active {
+	background-color: #d88fc466;
 }
 
 div.p0 {
 	top: 0;
-	left: 100px;
+	left: 0;
+	right: 0;
 }
 
 div.p1 {
-	border: 1px solid blue;
-	transform: rotate(90deg);
-	transform-origin: left bottom;
+	transform: rotate(-90deg) translateY(-15em) translateX(-16.5em);
+	transform-origin: right top;
 	top: 0;
 	right: 0;
 	bottom: 0;
@@ -64,8 +70,7 @@ div.p2 {
 }
 
 div.p3 {
-	display:none;
-	transform: rotate(-90deg);
+	transform: translateY(7em) translateX(5em) rotate(90deg);
 	transform-origin: left bottom;
 	left: 0;
 	height: 100px;
