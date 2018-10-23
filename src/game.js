@@ -24,7 +24,7 @@ export const Dominos = Game({
   playerView: PlayerView.STRIP_SECRETS,
 
   setup(ctx) {
-    const pieces = allDominos; // ctx.random.Shuffle(allDominos);
+    const pieces = ctx.random.Shuffle(allDominos);
     return {
       board: [],
       pieces: {

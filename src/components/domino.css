@@ -1,0 +1,198 @@
+div.hand {
+  display: flex;
+  font-size: 10px;
+}
+
+div.domino {
+	width: 6em;
+	height: 12em;
+	margin: 10px;
+	position: relative;
+	-webkit-border-radius: .8em;
+	-moz-border-radius: .8em;
+	border-radius: .8em;
+	-moz-box-shadow: .3em .3em 0em .2em #333;
+	-webkit-box-shadow: .3em .3em 0em .2em #333;
+	box-shadow: .3em .3em 0em .2em #333;
+}
+
+div.domino, div.domino span {
+	background-color: #000
+}
+
+div.domino .line {
+	width: 5.5em;
+	height: .2em;
+	position: absolute;
+	top: 5.7em;
+	left: .25em;
+	background-color: #fff;
+}
+
+.domino .TL6 {
+	width: 1.2em;
+	height: 1.2em;
+	position: absolute;
+	top: 2.4em;
+	left: 1.0em;
+	-webkit-border-radius: 4em;
+	-moz-border-radius: 4em;
+	border-radius: 4em;
+	background-color: #fff;
+}
+
+.domino .TL456 {
+	width: 1.2em;
+	height: 1.2em;
+	position: absolute;
+	top: 0.8em;
+	left: 1.0em;
+	-webkit-border-radius: 4em;
+	-moz-border-radius: 4em;
+	border-radius: 4em;
+	background-color: #fff;
+}
+
+.domino .TL23456 {
+	width: 1.2em;
+	height: 1.2em;
+	position: absolute;
+	top: 4.0em;
+	left: 1.0em;
+	-webkit-border-radius: 4em;
+	-moz-border-radius: 4em;
+	border-radius: 4em;
+	background-color: #fff;
+}
+
+.domino .TC135 {
+	width: 1.2em;
+	height: 1.2em;
+	position: absolute;
+	top: 2.4em;
+	left: 2.5em;
+	-webkit-border-radius: 4em;
+	-moz-border-radius: 4em;
+	border-radius: 4em;
+	background-color: #fff;
+}
+
+.domino .TR6 {
+	width: 1.2em;
+	height: 1.2em;
+	position: absolute;
+	top: 2.4em;
+	left: 4.0em;
+	-webkit-border-radius: 4em;
+	-moz-border-radius: 4em;
+	border-radius: 4em;
+	background-color: #fff;
+}
+
+.domino .TR456 {
+	width: 1.2em;
+	height: 1.2em;
+	position: absolute;
+	top: 4.0em;
+	left: 4.0em;
+	-webkit-border-radius: 4em;
+	-moz-border-radius: 4em;
+	border-radius: 4em;
+	background-color: #fff;
+}
+
+.domino .TR23456 {
+	width: 1.2em;
+	height: 1.2em;
+	position: absolute;
+	top: 0.8em;
+	left: 4.0em;
+	-webkit-border-radius: 4em;
+	-moz-border-radius: 4em;
+	border-radius: 4em;
+	background-color: #fff;
+}
+
+.domino .BL6 {
+	width: 1.2em;
+	height: 1.2em;
+	position: absolute;
+	top: 8.0em;
+	left: 1.0em;
+	-webkit-border-radius: 4em;
+	-moz-border-radius: 4em;
+	border-radius: 4em;
+	background-color: #fff;
+}
+
+.domino .BL456 {
+	width: 1.2em;
+	height: 1.2em;
+	position: absolute;
+	top: 6.4em;
+	left: 1.0em;
+	-webkit-border-radius: 4em;
+	-moz-border-radius: 4em;
+	border-radius: 4em;
+	background-color: #fff;
+}
+
+.domino .BL23456 {
+	width: 1.2em;
+	height: 1.2em;
+	position: absolute;
+	top: 9.6em;
+	left: 1.0em;
+	-webkit-border-radius: 4em;
+	-moz-border-radius: 4em;
+	border-radius: 4em;
+	background-color: #fff;
+}
+
+.domino .BC135 {
+	width: 1.2em;
+	height: 1.2em;
+	position: absolute;
+	top: 8.0em;
+	left: 2.5em;
+	-webkit-border-radius: 4em;
+	-moz-border-radius: 4em;
+	border-radius: 4em;
+	background-color: #fff;
+}
+
+.domino .BR6 {
+	width: 1.2em;
+	height: 1.2em;
+	position: absolute;
+	top: 8.0em;
+	left: 4.0em;
+	-webkit-border-radius: 4em;
+	-moz-border-radius: 4em;
+	border-radius: 4em;
+	background-color: #fff;
+}
+
+.domino .BR456 {
+	width: 1.2em;
+	height: 1.2em;
+	position: absolute;
+	top: 9.6em;
+	left: 4.0em;
+	-webkit-border-radius: 4em;
+	-moz-border-radius: 4em;
+	border-radius: 4em;
+	background-color: #fff;
+}
+
+.domino .BR23456 {
+	width: 1.2em;
+	height: 1.2em;
+	position: absolute;
+	top: 6.4em;
+	left: 4.0em;
+	-webkit-border-radius: 4em;
+	-moz-border-radius: 4em;
+	border-radius: 4em;
+	background-color: #fff;
+}
