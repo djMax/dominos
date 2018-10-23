@@ -13,13 +13,13 @@ const pips = [
 ];
 
 function renderPips(num, prefix) {
-  return (pips[Number(num)] || []).map(c => <span key={c} class={`${prefix}${c}`} />);
+  return (pips[Number(num)] || []).map(c => <span key={c} className={`${prefix}${c}`} />);
 }
 
 export const Domino = ({ first, second, ...rest }) => (
   <div className="domino" {...rest}>
     {renderPips(first, 'T')}
-    {first !== undefined && <span class="line" />}
+    {first !== undefined && <span className="line" />}
     {renderPips(second, 'B')}
   </div>
 );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Hand } from './components/hand';
+import { Hand } from './hand';
 
 export class DominoBoard extends React.Component {
   playPiece = (piece) => {
@@ -22,19 +22,19 @@ export class DominoBoard extends React.Component {
   }
 
   render() {
-    const { isActive } = this.props;
+    const { ctx: { currentPlayer } } = this.props;
     return (
       <div className="board">
-        <div className={`dplayer p0 ${isActive ? 'active' : ''}`}>
+        <div className={`dplayer p0 ${currentPlayer === '0' ? 'active' : ''}`}>
           {this.renderHand(0)}
         </div>
-        <div className="dplayer p1">
+        <div className={`dplayer p1 ${currentPlayer === '1' ? 'active' : ''}`}>
           {this.renderHand(1)}
         </div>
-        <div className="dplayer p2">
+        <div className={`dplayer p2 ${currentPlayer === '2' ? 'active' : ''}`}>
           {this.renderHand(2)}
         </div>
-        <div className="dplayer p3">
+        <div className={`dplayer p3 ${currentPlayer === '3' ? 'active' : ''}`}>
           {this.renderHand(3)}
         </div>
       </div>

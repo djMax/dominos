@@ -1,7 +1,7 @@
 import React from 'react';
 import { Client } from 'boardgame.io/react';
 import { Dominos } from './game';
-import { DominoBoard } from './board';
+import { DominoBoard } from './components/board';
 
 import './App.css';
 
