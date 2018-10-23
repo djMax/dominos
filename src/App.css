@@ -30,3 +30,28 @@
     transform: rotate(360deg);
   }
 }
+
+table {
+  border: 1px solid black;
+  width: 800px;
+  height: 800px;
+}
+
+table tr.row2 {
+  height: 200px;
+}
+
+table tr td.vert {
+  transform: rotate(90deg);
+}
+
+table tr td {
+  border: 1px solid red;
+}
+
+div.piece {
+  width: 50px;
+  height: 90px;
+  display: inline-block;
+  border: 1px solid black;
+}

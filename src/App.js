@@ -1,10 +1,15 @@
 import React from 'react';
 import { Client } from 'boardgame.io/react';
 import { Dominos } from './game';
+import { DominoBoard } from './board';
+
+import './App.css';
 
 const DominoClient = Client({
   game: Dominos,
+  board: DominoBoard,
   multiplayer: { local: true },
+  numPlayers: 4,
 });
 
 const App = () => (

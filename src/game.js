@@ -1,7 +1,8 @@
-import { Game } from 'boardgame.io/core';
+import { Game, PlayerView } from 'boardgame.io/core';
 
 export const Dominos = Game({
   name: 'Dominos',
+  playerView: PlayerView.STRIP_SECRETS,
 
   setup(ctx) {
     let pieces = [];
@@ -18,21 +19,43 @@ export const Dominos = Game({
       .map(p => ({ values: p.values }));
     return {
       board: [],
-      hands: [
-        pieces.slice(0, 7),
-        pieces.slice(7, 14),
-        pieces.slice(14, 21),
-        pieces.slice(21),
-      ],
+      pieces: {
+        0: 7,
+        1: 7,
+        2: 7,
+        3: 7,
+      },
+      players: {
+        0: { hand: pieces.slice(0, 7) },
+        1: { hand: pieces.slice(7, 14) },
+        2: { hand: pieces.slice(14, 21) },
+        3: { hand: pieces.slice(21) },
+      },
     };
   },
 
   moves: {
-    addDomino(G, ctx, id) {
-      if (G.board.length === 0) {
-        let board = [id];
-        return { ...G, board };
+    addDomino(G, ctx, piece) {
+      const player = ctx.currentPlayer;
+      const newState = {
+        ...G,
+        board: [piece],
+        pieces: {
+          ...G.pieces,
+          [player]: G.pieces[player] - 1,
+        },
+        players: {
+          ...G.players,
+        },
+      };
+      if (newState.players[player]) {
+        newState.players[player] = {
+          ...newState.players[player],
+          hand: newState.players[player].hand
+            .filter(p => (p.values[0] !== piece.values[0] || p.values[1] !== [piece.values[1]])),
+        };
       }
+      return newState;
     },
     pass(G, ctx) {
 
