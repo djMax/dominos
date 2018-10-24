@@ -6,6 +6,7 @@ import { withKnobs, number } from '@storybook/addon-knobs/react';
 
 import { Domino } from '../components/domino';
 import { Hand } from '../components/hand';
+import { PlayedTiles } from '../components/played-tiles';
 
 const dRange = { range: true, min: 0, max: 6, step: 1 };
 
@@ -54,3 +55,30 @@ storiesOf('Hand', module)
       />
     </div>
   );
+
+storiesOf('Played Tiles', module)
+    .add('double six starts', () =>
+      <PlayedTiles root={{ values: [6, 6] }} />
+    )
+    .add('1 piece', () =>
+      <PlayedTiles root={{ values: [3, 6] }} />
+    )
+    .add('L piece', () =>
+      <PlayedTiles
+        root={{ values: [6, 6] }}
+        left={[{ values: [6, 1]}]}
+      />
+    )
+    .add('R piece', () =>
+      <PlayedTiles
+        root={{ values: [6, 6] }}
+        right={[{ values: [6, 3]}]}
+      />
+    )
+    .add('3 pieces', () =>
+      <PlayedTiles
+        root={{ values: [6, 6] }}
+        left={[{ values: [6, 1]}]}
+        right={[{ values: [6, 3]}]}
+      />
+    );

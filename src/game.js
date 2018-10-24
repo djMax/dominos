@@ -10,6 +10,35 @@ function isSamePiece(p1, p2) {
   return false;
 }
 
+function placePiece(board, piece, placeLeft) {
+  if (!board.root) {
+    return {
+      ...board,
+      root: piece,
+    };
+  }
+  let leftPiece = board.left.length ? board.left[board.left.length - 1] : board.root;
+  let rightPiece = board.right.length ? board.right[board.right.length - 1] : board.root;
+
+  if (placeLeft === true) {
+    rightPiece = null;
+  } else if (placeLeft === false) {
+    leftPiece = null;
+  }
+
+  if (leftPiece && piece.values[0] === leftPiece.values[1]) {
+    return {
+      ...board,
+      left: [...board.left, { values: [piece.values[0], piece.values[1]] }],
+    }
+  } else if (leftPiece && piece.values[1] === leftPiece.values[0]) {
+    return {
+      ...board,
+      left: [...board.left, { values: [piece.values[1], piece.values[0]] }],
+    }
+  }
+}
+
 const allDominos = [];
 for (let firstHalf = 0; firstHalf <= 6; firstHalf += 1) {
   for (let secondHalf = firstHalf; secondHalf <= 6; secondHalf += 1) {
@@ -26,7 +55,12 @@ export const Dominos = Game({
   setup(ctx) {
     const pieces = ctx.random.Shuffle(allDominos);
     return {
-      board: [],
+      board: {
+        root: null,
+        left: [],
+        right: [],
+      },
+      startingPlayer: parseInt(pieces.findIndex(p => (p.values[0] === 6 && p.values[1] === 6)) / 7),
       pieces: {
         0: 7,
         1: 7,
@@ -42,12 +76,23 @@ export const Dominos = Game({
     };
   },
 
+  flow: {
+    turnOrder: {
+      first: (G) => G.startingPlayer,
+      next: (G, ctx) => (ctx.playOrderPos + 1) % ctx.numPlayers,
+    }
+  },
+
   moves: {
     addDomino(G, ctx, piece) {
       const player = ctx.currentPlayer;
+      const board = placePiece(G.board, piece);
+      if (!board) {
+        return;
+      }
       const newState = {
         ...G,
-        board: [piece],
+        board,
         pieces: {
           ...G.pieces,
           [player]: G.pieces[player] - 1,
