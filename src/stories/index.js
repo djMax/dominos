@@ -69,10 +69,10 @@ storiesOf('Played Tiles', module)
         left={[{ values: [6, 1]}]}
       />
     )
-    .add('R piece', () =>
+    .add('R pieces', () =>
       <PlayedTiles
         root={{ values: [6, 6] }}
-        right={[{ values: [6, 3]}]}
+        right={[{ values: [6, 3]}, { values: [3, 2] }]}
       />
     )
     .add('3 pieces', () =>
