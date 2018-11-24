@@ -87,6 +87,7 @@ export const Dominos = Game({
     addDomino(G, ctx, piece) {
       const player = ctx.currentPlayer;
       const board = placePiece(G.board, piece);
+      console.error(board);
       if (!board) {
         return;
       }

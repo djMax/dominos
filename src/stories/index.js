@@ -7,6 +7,7 @@ import { withKnobs, number } from '@storybook/addon-knobs/react';
 import { Domino } from '../components/domino';
 import { Hand } from '../components/hand';
 import { PlayedTiles } from '../components/played-tiles';
+import { DominoBoard } from '../components/board';
 
 const dRange = { range: true, min: 0, max: 6, step: 1 };
 
@@ -43,9 +44,12 @@ storiesOf('Hand', module)
       pieces={new Array(7).fill(true).map(() => randomPiece())}
     />
   )
-  .add('rotated hand', () =>
+  .add('left rotated hand', () =>
     <div style={{
-      transform: 'rotate(90deg)',
+      transform: 'rotate(-90deg)',
+      bottom: 0,
+      right: '30%',
+      position: 'absolute',
       border: '1px solid black',
       transformOrigin: 'left bottom',
     }}>
@@ -54,7 +58,22 @@ storiesOf('Hand', module)
         pieces={new Array(7).fill(true).map(() => randomPiece())}
       />
     </div>
-  );
+  )
+  .add('right rotated hand', () =>
+  <div style={{
+    transform: 'rotate(90deg)',
+    bottom: 0,
+    right: '30%',
+    position: 'absolute',
+    border: '1px solid black',
+    transformOrigin: 'right bottom',
+  }}>
+    <Hand
+      style={{ fontSize: `${number('Scale', .75)}em` }}
+      pieces={new Array(7).fill(true).map(() => randomPiece())}
+    />
+  </div>
+);
 
 storiesOf('Played Tiles', module)
     .add('double six starts', () =>
@@ -82,3 +101,27 @@ storiesOf('Played Tiles', module)
         right={[{ values: [6, 3]}]}
       />
     );
+
+  function fakeContext(player) {
+    return {
+      currentPlayer: player,
+    };
+  }
+
+  function fakeGame(player, numPieces) {
+    const G = {
+      pieces: [[6, 6]],
+      players: [
+        { hand: [[6, 5]] },
+        { hand: [[6, 5]] },
+        { hand: [[6, 5]] },
+        { hand: [[6, 5]] },
+      ]
+    };
+    return G;
+  }
+
+  storiesOf('Board', module)
+    .add('one piece per, player 0 turn', () =>
+      <DominoBoard ctx={fakeContext(0)} G={fakeGame(0, 1)} playerID={0}/>
+    )

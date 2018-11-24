@@ -4,7 +4,7 @@ import { Domino } from './domino';
 import './played-tiles.css';
 
 function isDouble(piece) {
-  return piece.values[0] === piece.values[1];
+  return piece && piece.values[0] === piece.values[1];
 }
 
 function transformFor(piece, offsets, dir = 'left') {

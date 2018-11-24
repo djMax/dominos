@@ -1,7 +1,9 @@
 import React from 'react';
 import { Domino } from './domino';
 
-export const Hand = ({ pieces, onClick, ...rest }) => {
+import './hand.css';
+
+export const Hand = ({ pieces, name, onClick, ...rest }) => {
   let finalHand = Array.isArray(pieces) ? pieces : Array(pieces).fill({ values: [undefined, undefined] });
   return (
     <div className="hand" {...rest}>
@@ -11,6 +13,7 @@ export const Hand = ({ pieces, onClick, ...rest }) => {
         second={p.values[1]}
         onClick={() => (onClick && onClick(p))}
       />)}
+      <div className="name">{name}</div>
     </div>
   );
 }

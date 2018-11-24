@@ -12,8 +12,9 @@ export class DominoBoard extends React.Component {
   }
 
   renderHand(player) {
-    const { G: { pieces, players }, playerID} = this.props;
+    const { G: { pieces, players }, playerID } = this.props;
     const hand = {
+      name: `Player ${player + 1}`,
       pieces: players[player] ? players[player].hand : pieces[player],
     };
     if (String(player) === String(playerID)) {
