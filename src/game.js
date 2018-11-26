@@ -1,4 +1,5 @@
 import { Game, PlayerView } from 'boardgame.io/core';
+import { PlayerHand } from './model/PlayerHand';
 
 function isSamePiece(p1, p2) {
   if (p1.values[0] === p2.values[0] && p1.values[1] === p2.values[1]) {
@@ -78,10 +79,10 @@ export const Dominos = Game({
         3: 7,
       },
       players: {
-        0: { hand: pieces.slice(0, 7) },
-        1: { hand: pieces.slice(7, 14) },
-        2: { hand: pieces.slice(14, 21) },
-        3: { hand: pieces.slice(21) },
+        0: new PlayerHand(0, pieces.slice(0, 7)),
+        1: new PlayerHand(1, pieces.slice(7, 14)),
+        2: new PlayerHand(2, pieces.slice(14, 21)),
+        3: new PlayerHand(3, pieces.slice(21)),
       },
     };
   },
@@ -89,7 +90,10 @@ export const Dominos = Game({
   flow: {
     turnOrder: {
       first: (G) => G.startingPlayer,
-      next: (G, ctx) => (ctx.playOrderPos + 1) % ctx.numPlayers,
+      next: (G, ctx) => {
+        console.log('NEXT', ctx.playOrderPos);
+        return (ctx.playOrderPos + 1) % ctx.numPlayers;
+      },
     }
   },
 
@@ -97,7 +101,6 @@ export const Dominos = Game({
     addDomino(G, ctx, piece) {
       const player = ctx.currentPlayer;
       const board = placePiece(G.board, piece);
-      console.error(board);
       if (!board) {
         return;
       }

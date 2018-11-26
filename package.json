@@ -7,11 +7,13 @@
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-scripts": "2.0.5",
+    "redux-logger": "^3.0.6",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.83.0"
   },
   "scripts": {
     "start": "react-scripts start",
+    "lint": "eslint .",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

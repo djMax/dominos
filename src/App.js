@@ -1,4 +1,6 @@
 import React from 'react';
+import logger from 'redux-logger';
+import { applyMiddleware } from 'redux';
 import { Client } from 'boardgame.io/react';
 import { Dominos } from './game';
 import { DominoBoard } from './components/board';
@@ -12,6 +14,7 @@ const DominoClient = Client({
   board: DominoBoard,
   multiplayer: { local: true },
   numPlayers: 4,
+  enhancer: applyMiddleware(logger),
 });
 
 const App = () => (

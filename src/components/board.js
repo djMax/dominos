@@ -7,7 +7,7 @@ export class DominoBoard extends React.Component {
     const { moves, events, isActive } = this.props;
     if (isActive) {
       moves.addDomino(piece);
-      setTimeout(() => events.endTurn(), 1000);
+      setTimeout(() => events.endTurn(), 1500);
     }
   }
 
