@@ -4,10 +4,9 @@ import { PlayedTiles } from './played-tiles';
 
 export class DominoBoard extends React.Component {
   playPiece = (piece) => {
-    const { moves, events, isActive } = this.props;
+    const { moves, isActive } = this.props;
     if (isActive) {
       moves.addDomino(piece);
-      setTimeout(() => events.endTurn(), 1500);
     }
   }
 

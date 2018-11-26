@@ -88,6 +88,8 @@ export const Dominos = Game({
   },
 
   flow: {
+    movesPerTurn: 1,
+
     turnOrder: {
       first: (G) => G.startingPlayer,
       next: (G, ctx) => {
