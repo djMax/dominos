@@ -75,6 +75,17 @@ storiesOf('Hand', module)
   </div>
 );
 
+function toValues(str) {
+  const pieces = str.split(' ');
+  return pieces.map((p) => {
+    const pips = p.split(',');
+    return { values: pips };
+  });
+}
+
+const sampleLeft = toValues('6,5 5,4 4,3 3,2 2,1 1,0 0,0 0,2');
+const sampleRight = toValues('6,4 4,2 2,0 0,3 3,5 5,5');
+
 storiesOf('Played Tiles', module)
     .add('double six starts', () =>
       <PlayedTiles root={{ values: [6, 6] }} />
@@ -86,6 +97,12 @@ storiesOf('Played Tiles', module)
       <PlayedTiles
         root={{ values: [6, 6] }}
         left={[{ values: [6, 1]}]}
+      />
+    )
+    .add('R piece', () =>
+      <PlayedTiles
+        root={{ values: [6, 6] }}
+        right={[{ values: [6, 1]}]}
       />
     )
     .add('R pieces', () =>
@@ -100,7 +117,28 @@ storiesOf('Played Tiles', module)
         left={[{ values: [6, 1]}]}
         right={[{ values: [6, 3]}]}
       />
+    )
+    .add('3 pieces no double', () =>
+      <PlayedTiles
+        root={{ values: [6, 4] }}
+        left={[{ values: [4, 1]}]}
+        right={[{ values: [6, 3]}]}
+      />
+    )
+    .add('all the dominoes left', () =>
+      <PlayedTiles
+        root={{ values: [6, 6] }}
+        left={sampleLeft.slice(0, 6)}
+      />
+    )
+    .add('all the dominoes', () =>
+      <PlayedTiles
+        root={{ values: [6, 6] }}
+        left={sampleLeft}
+        right={sampleRight}
+      />
     );
+
 
   function fakeContext(player) {
     return {
