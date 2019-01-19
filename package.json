@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/register": "^7.0.0",
     "@material-ui/core": "^3.9.0",
     "@material-ui/icons": "^3.0.2",
+    "babel-preset-gasbuddy": "^5.3.0",
     "boardgame.io": "^0.30.0",
     "classnames": "^2.2.6",
     "react": "^16.7.0",
@@ -13,7 +15,9 @@
     "redux-logger": "^3.0.6"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start-react-dev": "react-scripts start",
+    "start-dev": "nodemon server/index.js | pino-pretty",
+    "start": "node server/index.js",
     "lint": "eslint .",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -30,11 +34,13 @@
     "not ie <= 11",
     "not op_mini all"
   ],
+  "proxy": "http://localhost:8000/",
   "devDependencies": {
     "@storybook/addon-actions": "^4.1.7",
     "@storybook/addon-knobs": "^4.1.7",
     "@storybook/addon-links": "^4.1.7",
     "@storybook/addons": "^4.1.7",
-    "@storybook/react": "^4.1.7"
+    "@storybook/react": "^4.1.7",
+    "pino-pretty": "^2.5.0"
   }
 }

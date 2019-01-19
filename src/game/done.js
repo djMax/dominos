@@ -1,5 +1,9 @@
 import getPlayablePieces from "./options";
 
+function printPlayer([playerId, { hand }]) {
+  return `Player ${playerId + 1}: ${hand.map(p => `${p.values[0]},${p.values[1]}`).join(' ')}`
+}
+
 export default function isGameDone(G) {
   const { board, players } = G;
   if (!board.root) {
@@ -7,7 +11,6 @@ export default function isGameDone(G) {
   }
   const possibles = getPlayablePieces(board);
   if (Object.values(players).find(p => p.hand.length === 0)) {
-    console.log('SOMEBODY WON');
     return true;
   }
   for (const player of Object.values(players)) {
@@ -15,6 +18,8 @@ export default function isGameDone(G) {
       return false;
     }
   }
-  console.log('GAME IS CLOSED');
+  console.log(`The game is closed. Remaining:
+  ${Object.entries(players).map(printPlayer).join('\n  ')}
+  Board ends: ${possibles.join(' ')}`);
   return true;
 }

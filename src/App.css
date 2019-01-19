@@ -1,5 +1,6 @@
 div.board {
 	width: 100vw;
+	max-width: 1024px;
 	height: 90vh;
 	position: relative;
 }

@@ -1,5 +1,6 @@
 import { Game, PlayerView, INVALID_MOVE } from 'boardgame.io/core';
 import isGameDone from './done';
+import { scoreHand } from './scoreHand';
 
 function isSamePiece(p1, p2) {
   if (p1.values[0] === p2.values[0] && p1.values[1] === p2.values[1]) {
@@ -77,6 +78,7 @@ export const Dominos = Game({
         '0and2': 0,
         '1and3': 0,
       },
+      playerTypes: ['human', 'ai', 'ai', 'ai'],
       players: {},
       pieces: [0, 0, 0, 0],
     };
@@ -127,6 +129,44 @@ export const Dominos = Game({
         endPhaseIf: isGameDone,
         next: 'score',
       },
+
+      score: {
+        allowedMoves: ['continue'],
+        next: 'draw',
+        onPhaseBegin(G, ctx) {
+          const { players } = G;
+          const pointTotals = [
+            scoreHand(players[0]),
+            scoreHand(players[1]),
+            scoreHand(players[2]),
+            scoreHand(players[3]),
+          ];
+          let winner = Object.entries(players).find(([pid, { hand }]) => hand.length === 0);
+          if (!winner) {
+            let minScore = Number.MAX_SAFE_INTEGER;
+            for (let i = 0; i < 4; i += 1) {
+              const thisPlayer = (Number(ctx.currentPlayer) + i) % ctx.playOrder.length;
+              if (pointTotals[thisPlayer] < minScore) {
+                winner = thisPlayer;
+              }
+            }
+            debugger;
+          }
+          if (["0","2"].includes(String(winner))) {
+            G.completed = {
+              winner,
+              points: pointTotals[1] + pointTotals[3],
+              hands: [...players[1].hand, ...players[3].hand],
+            };
+          } else {
+            G.completed = {
+              winner,
+              points: pointTotals[0] + pointTotals[2],
+              hands: [...players[0].hand, ...players[2].hand],
+            };
+          }
+        }
+      },
     },
   },
 
@@ -148,6 +188,7 @@ export const Dominos = Game({
 
     playDomino(G, ctx, piece) {
       const player = ctx.currentPlayer;
+      console.log(`Player ${player} is playing ${piece.values}`);
       const board = placePiece(G.board, piece);
       if (!board) {
         return INVALID_MOVE;

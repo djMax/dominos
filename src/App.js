@@ -6,14 +6,15 @@ import { Client } from 'boardgame.io/react';
 import { Tab, Tabs, AppBar, withStyles } from '@material-ui/core';
 import { Dominos } from './game';
 import { DominoBoard } from './components/board';
+import ai from './game/ai';
 
 import './App.css';
 
 const DominoClient = Client({
   game: Dominos,
   board: DominoBoard,
-  multiplayer: { local: true },
-  debug: false,
+  multiplayer: { server: 'http://localhost:8000' },
+  debug: true,
   numPlayers: 4,
   enhancer: applyMiddleware(logger),
 });
@@ -33,7 +34,7 @@ class App extends React.Component {
     this.setState({ selectedPlayer: value });
   }
 
-  render() {
+  renderAllHands() {
     const { selectedPlayer } = this.state;
     const { classes } = this.props;
     return (
@@ -60,6 +61,22 @@ class App extends React.Component {
         </div>
       </div>
     );
+  }
+
+  renderOneHand() {
+    const { selectedPlayer } = this.state;
+    const { classes } = this.props;
+    return (
+      <div>
+        <div className={classnames({ [classes.hidden]: selectedPlayer !== 0 })}>
+          <DominoClient playerID="0" />
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    return this.renderOneHand();
   }
 }
 export default withStyles(styles)(App);
