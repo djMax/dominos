@@ -1,11 +1,11 @@
 div.playspace {
   position: absolute;
   font-size: 8px;
-  width: 600px;
-  height: 600px;
-  top: 150px;
-  left: 150px;
-  border: 1px solid black;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
 }
 
 div.playspace>div {

@@ -2,6 +2,7 @@ import React from 'react';
 import { Hand } from './hand';
 import { PlayedTiles } from './played-tiles';
 import { Button } from '@material-ui/core';
+import getPlayablePieces from '../game/options';
 
 export class DominoBoard extends React.Component {
   playPiece = (piece) => {
@@ -11,13 +12,20 @@ export class DominoBoard extends React.Component {
     }
   }
 
+  pass = () => {
+    const { moves, isActive } = this.props;
+    if (isActive) {
+      moves.pass();
+    }
+  }
+
   getHand = () => {
     const { moves } = this.props;
     moves.takeHand();
   }
 
   renderHand(player) {
-    const { G: { pieces, players }, playerID, ctx: { phase, actionPlayers }, moves, isActive } = this.props;
+    const { G: { board, pieces, players }, playerID, ctx: { phase }, isActive } = this.props;
     if (phase === 'draw' && isActive && String(player) === String(playerID)) {
       return (
         <Button
@@ -32,12 +40,18 @@ export class DominoBoard extends React.Component {
     };
     if (String(player) === String(playerID)) {
       hand.onClick = this.playPiece;
+      if (board.root && isActive) {
+        const possible = getPlayablePieces(board);
+        if (!players[player].hand.find(p => possible.includes(p.values[0]) || possible.includes(p.values[1]))) {
+          hand.onPass = this.pass;
+        }
+      }
     }
     return <Hand {...hand} />
   }
 
   render() {
-    const { ctx: { currentPlayer }, G: { board, pieces } } = this.props;
+    const { ctx: { currentPlayer }, G: { board } } = this.props;
     return (
       <div className="board">
         <div className={`dplayer p0 ${currentPlayer === '0' ? 'active' : ''}`}>

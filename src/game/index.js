@@ -1,5 +1,5 @@
 import { Game, PlayerView, INVALID_MOVE } from 'boardgame.io/core';
-import { PlayerHand } from '../model/PlayerHand';
+import isGameDone from './done';
 
 function isSamePiece(p1, p2) {
   if (p1.values[0] === p2.values[0] && p1.values[1] === p2.values[1]) {
@@ -32,7 +32,7 @@ function placePiece(board, piece, placeLeft) {
       ...board,
       left: [...board.left, { values: [piece.values[0], piece.values[1]] }],
     }
-  } else if (leftPiece && piece.values[1] === leftPiece.values[0]) {
+  } else if (leftPiece && piece.values[1] === leftPiece.values[1]) {
     return {
       ...board,
       left: [...board.left, { values: [piece.values[1], piece.values[0]] }],
@@ -42,10 +42,10 @@ function placePiece(board, piece, placeLeft) {
       ...board,
       right: [...board.right, { values: [piece.values[0], piece.values[1]] }],
     };
-  } else if (rightPiece && piece.values[1] === rightPiece.values[0]) {
+  } else if (rightPiece && piece.values[1] === rightPiece.values[1]) {
     return {
       ...board,
-      right: [...board.right, { values: [piece.values[0], piece.values[1]] }],
+      right: [...board.right, { values: [piece.values[1], piece.values[0]] }],
     };
   }
 }
@@ -124,9 +124,7 @@ export const Dominos = Game({
 
       play: {
         allowedMoves: ['playDomino', 'pass'],
-        endPhaseIf: (G) => {
-
-        },
+        endPhaseIf: isGameDone,
         next: 'score',
       },
     },
@@ -160,7 +158,7 @@ export const Dominos = Game({
     },
 
     pass(G, ctx) {
-
+      // TODO make sure they really pass
     },
 
     deferStart(G, ctx) {

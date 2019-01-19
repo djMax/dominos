@@ -83,7 +83,7 @@ function toValues(str) {
   });
 }
 
-const sampleLeft = toValues('6,5 5,4 4,3 3,2 2,1 1,0 0,0 0,2');
+const sampleGame = toValues('6,5 5,5 5,4 4,3 3,5 5,5 5,3 3,3 3,2 2,1 1,1 1,0 0,0 0,2 2,4 4,1 1,1 1,3 3,6 6,2 2,2 2,3 3,4 4,5 5,2 2,1');
 const sampleRight = toValues('6,4 4,2 2,0 0,3 3,5 5,5');
 
 storiesOf('Played Tiles', module)
@@ -128,14 +128,20 @@ storiesOf('Played Tiles', module)
     .add('all the dominoes left', () =>
       <PlayedTiles
         root={{ values: [6, 6] }}
-        left={sampleLeft.slice(0, 6)}
+        left={sampleGame}
+      />
+    )
+    .add('all the dominoes right', () =>
+      <PlayedTiles
+        root={{ values: [6, 6] }}
+        right={sampleGame.slice(0, 18)}
       />
     )
     .add('all the dominoes', () =>
       <PlayedTiles
         root={{ values: [6, 6] }}
-        left={sampleLeft}
-        right={sampleRight}
+        left={sampleGame}
+        right={sampleGame}
       />
     );
 

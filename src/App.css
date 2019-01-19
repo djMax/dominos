@@ -1,7 +1,6 @@
 div.board {
-	border: 1px solid black;
-	width: 900px;
-	height: 900px;
+	width: 100vw;
+	height: 90vh;
 	position: relative;
 }
 
@@ -13,6 +12,12 @@ div.dplayer {
 
 div.dplayer.active {
 	background-color: #d88fc466;
+}
+
+div.dplayer button {
+	position: absolute;
+	top: 50%;
+	left: 50%;
 }
 
 div.p0 {

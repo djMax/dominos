@@ -13,6 +13,7 @@ const DominoClient = Client({
   game: Dominos,
   board: DominoBoard,
   multiplayer: { local: true },
+  debug: false,
   numPlayers: 4,
   enhancer: applyMiddleware(logger),
 });
