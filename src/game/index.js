@@ -1,4 +1,4 @@
-import { Game, PlayerView, INVALID_MOVE } from 'boardgame.io/core';
+import { Game, PlayerView, INVALID_MOVE } from '@djmax/boardgame.io/core';
 import isGameDone from './done';
 import { scoreHand } from './scoreHand';
 

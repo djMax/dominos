@@ -2,7 +2,7 @@ import React from 'react';
 import logger from 'redux-logger';
 import classnames from 'classnames';
 import { applyMiddleware } from 'redux';
-import { Client } from 'boardgame.io/react';
+import { Client } from '@djmax/boardgame.io/react';
 import { Tab, Tabs, AppBar, withStyles } from '@material-ui/core';
 import { Dominos } from './game';
 import { DominoBoard } from './components/board';

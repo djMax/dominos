@@ -1,4 +1,4 @@
-import { AI } from 'boardgame.io/ai';
+import { AI } from '@djmax/boardgame.io/ai';
 import getPlayablePieces from './options';
 
 export function enumerate(G, ctx) {
