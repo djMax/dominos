@@ -13,7 +13,7 @@ import './App.css';
 const DominoClient = Client({
   game: Dominos,
   board: DominoBoard,
-  multiplayer: { server: 'http://localhost:8000' },
+  multiplayer: { server: '//' },
   debug: true,
   numPlayers: 4,
   enhancer: applyMiddleware(logger),
