@@ -67,7 +67,6 @@ export const Dominos = Game({
   setup(ctx) {
     return {
       secret: {
-        pieces: ctx.random.Shuffle(allDominos.slice(0)),
       },
       board: {
         root: null,
@@ -85,7 +84,7 @@ export const Dominos = Game({
   },
 
   flow: {
-    startingPhase: 'draw',
+    startingPhase: 'play',
     movesPerTurn: 1,
 
     optimisticUpdate(G, ctx, move) {
@@ -94,45 +93,47 @@ export const Dominos = Game({
 
     turnOrder: {
       first(G) {
-        console.log('First player?');
+        // TODO if some team won, let them start
+        // Find the double six...
+        const owner = Object.entries(G.players)
+          .find(([playerId, pieces]) => {
+            return pieces.hand.find(p => p.values[0] === 6 && p.values[1] === 6);
+          });
+        if (owner) {
+          console.log('Double six starts, which is player', Number(owner[0]) + 1);
+          return Number(owner[0]);
+        }
         return 0;
       },
       next(G, ctx) {
-        if (ctx.phase === 'play' && !G.pieces.find(ct => ct !== 7)) {
-          // TODO if some team won, let them start
-          // Find the double six...
-          const owner = Object.entries(G.players)
-            .find(([playerId, pieces]) => {
-              return pieces.hand.find(p => p.values[0] === 6 && p.values[1] === 6);
-            });
-          if (owner) {
-            console.log('Double six starts, which is player', Number(owner[0]) + 1);
-            return Number(owner[0]);
-          }
-        }
         console.log('Next player', (ctx.playOrderPos + 1) % ctx.playOrder.length);
         return (ctx.playOrderPos + 1) % ctx.playOrder.length;
       },
     },
 
     phases: {
-      draw: {
-        allowedMoves: ['takeHand'],
-        endPhaseIf(G) {
-          return G.secret && G.secret.pieces.length === 0;
-        },
-        next: 'play',
-      },
-
       play: {
         allowedMoves: ['playDomino', 'pass'],
+        onPhaseBegin(G, ctx) {
+          console.log('Allocating dominos');
+          const pieces = ctx.random.Shuffle(allDominos.slice(0));
+          G.players = {
+            0: { hand: pieces.slice(0, 7) },
+            1: { hand: pieces.slice(7, 14) },
+            2: { hand: pieces.slice(14, 21) },
+            3: { hand: pieces.slice(21) },
+          };
+          G.pieces = [7, 7, 7, 7];
+          G.secret.pieces = [];
+
+        },
         endPhaseIf: isGameDone,
         next: 'score',
       },
 
       score: {
         allowedMoves: ['continue'],
-        next: 'draw',
+        next: 'play',
         onPhaseBegin(G, ctx) {
           const { players } = G;
           const pointTotals = [
@@ -171,21 +172,6 @@ export const Dominos = Game({
   },
 
   moves: {
-    takeHand(G, ctx) {
-      if (G.secret) {
-        console.log('Allocating dominos');
-        const { pieces } = G.secret;
-        G.players = {
-          0: { hand: pieces.slice(0, 7) },
-          1: { hand: pieces.slice(7, 14) },
-          2: { hand: pieces.slice(14, 21) },
-          3: { hand: pieces.slice(21) },
-        };
-        G.pieces = [7, 7, 7, 7];
-        G.secret.pieces = [];
-      }
-    },
-
     playDomino(G, ctx, piece) {
       const player = ctx.currentPlayer;
       console.log(`Player ${player} is playing ${piece.values}`);
