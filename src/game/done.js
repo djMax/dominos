@@ -1,4 +1,4 @@
-import getPlayablePieces from "./options";
+import LogicalBoard from '../lib/LogicalBoard';
 
 function printPlayer([playerId, { hand }]) {
   return `Player ${playerId + 1}: ${hand.map(p => `${p.values[0]},${p.values[1]}`).join(' ')}`
@@ -9,7 +9,7 @@ export default function isGameDone(G) {
   if (!board.root) {
     return false;
   }
-  const possibles = getPlayablePieces(board);
+  const possibles = new LogicalBoard(board).validPieces;
   if (Object.values(players).find(p => p.hand.length === 0)) {
     return true;
   }

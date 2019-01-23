@@ -1,6 +1,7 @@
 import { Game, PlayerView, INVALID_MOVE } from '@djmax/boardgame.io/core';
 import isGameDone from './done';
 import { scoreHand } from './scoreHand';
+import LogicalBoard from '../lib/LogicalBoard';
 
 function isSamePiece(p1, p2) {
   if (p1.values[0] === p2.values[0] && p1.values[1] === p2.values[1]) {
@@ -12,54 +13,6 @@ function isSamePiece(p1, p2) {
   return false;
 }
 
-function placePiece(board, piece, placeLeft) {
-  if (!board.root) {
-    return {
-      ...board,
-      root: piece,
-    };
-  }
-  let leftPiece = board.left.length ? board.left[board.left.length - 1] : board.root;
-  let rightPiece = board.right.length ? board.right[board.right.length - 1] : board.root;
-
-  if (placeLeft === true) {
-    rightPiece = null;
-  } else if (placeLeft === false) {
-    leftPiece = null;
-  }
-
-  if (leftPiece && piece.values[0] === leftPiece.values[1]) {
-    return {
-      ...board,
-      left: [...board.left, { values: [piece.values[0], piece.values[1]] }],
-    }
-  } else if (leftPiece && piece.values[1] === leftPiece.values[1]) {
-    return {
-      ...board,
-      left: [...board.left, { values: [piece.values[1], piece.values[0]] }],
-    };
-  } else if (rightPiece && piece.values[0] === rightPiece.values[1]) {
-    return {
-      ...board,
-      right: [...board.right, { values: [piece.values[0], piece.values[1]] }],
-    };
-  } else if (rightPiece && piece.values[1] === rightPiece.values[1]) {
-    return {
-      ...board,
-      right: [...board.right, { values: [piece.values[1], piece.values[0]] }],
-    };
-  }
-}
-
-const allDominos = [];
-for (let firstHalf = 0; firstHalf <= 6; firstHalf += 1) {
-  for (let secondHalf = firstHalf; secondHalf <= 6; secondHalf += 1) {
-    allDominos.push({
-      values: [firstHalf, secondHalf],
-    });
-  }
-}
-
 export const Dominos = Game({
   name: 'Dominos',
   playerView: PlayerView.STRIP_SECRETS,
@@ -67,11 +20,6 @@ export const Dominos = Game({
   setup(ctx) {
     return {
       secret: {
-      },
-      board: {
-        root: null,
-        left: [],
-        right: [],
       },
       scores: {
         '0and2': 0,
@@ -116,7 +64,7 @@ export const Dominos = Game({
         allowedMoves: ['playDomino', 'pass'],
         onPhaseBegin(G, ctx) {
           console.log('Allocating dominos');
-          const pieces = ctx.random.Shuffle(allDominos.slice(0));
+          const pieces = ctx.random.Shuffle(LogicalBoard.allDominos.slice(0));
           G.players = {
             0: { hand: pieces.slice(0, 7) },
             1: { hand: pieces.slice(7, 14) },
@@ -124,8 +72,7 @@ export const Dominos = Game({
             3: { hand: pieces.slice(21) },
           };
           G.pieces = [7, 7, 7, 7];
-          G.secret.pieces = [];
-
+          G.board = { root: null, left: [], right: [], playCount: 0 };
         },
         endPhaseIf: isGameDone,
         next: 'score',
@@ -166,7 +113,10 @@ export const Dominos = Game({
               hands: [...players[0].hand, ...players[2].hand],
             };
           }
-        }
+        },
+        endPhaseIf(G) {
+          return G.board.ack === G.playerTypes.filter(p => p === 'human').length;
+        },
       },
     },
   },
@@ -175,11 +125,14 @@ export const Dominos = Game({
     playDomino(G, ctx, piece) {
       const player = ctx.currentPlayer;
       console.log(`Player ${player} is playing ${piece.values}`);
-      const board = placePiece(G.board, piece);
-      if (!board) {
-        return INVALID_MOVE;
+      try {
+        G.board = LogicalBoard.getNewBoard(G.board, player, piece);
+      } catch (error) {
+        if (error.invalidMove) {
+          return INVALID_MOVE;
+        }
+        throw error;
       }
-      G.board = board;
       G.pieces[player] = G.pieces[player] - 1;
       G.players[player].hand = G.players[player].hand.filter(p => !isSamePiece(p, piece));
     },
@@ -190,6 +143,10 @@ export const Dominos = Game({
 
     deferStart(G, ctx) {
 
+    },
+
+    continue(G, ctx) {
+      G.board.ack = (G.board.ack || 0) + 1;
     }
   },
 });

@@ -88,27 +88,27 @@ const sampleRight = toValues('6,4 4,2 2,0 0,3 3,5 5,5');
 
 storiesOf('Played Tiles', module)
     .add('double six starts', () =>
-      <PlayedTiles root={{ values: [6, 6] }} />
+      <PlayedTiles root={{ values: [6, 6], by: 0, sequence: 1 }} />
     )
     .add('1 piece', () =>
-      <PlayedTiles root={{ values: [3, 6] }} />
+      <PlayedTiles root={{ values: [3, 6], sequence: 1 }} />
     )
     .add('L piece', () =>
       <PlayedTiles
-        root={{ values: [6, 6] }}
-        left={[{ values: [6, 1]}]}
+        root={{ values: [6, 6], sequence: 1 }}
+        left={[{ values: [6, 1], sequence: 2 }]}
       />
     )
     .add('R piece', () =>
       <PlayedTiles
-        root={{ values: [6, 6] }}
-        right={[{ values: [6, 1]}]}
+        root={{ values: [6, 6], sequence: 1 }}
+        right={[{ values: [6, 1], sequence: 2}]}
       />
     )
     .add('R pieces', () =>
       <PlayedTiles
-        root={{ values: [6, 6] }}
-        right={[{ values: [6, 3]}, { values: [3, 2] }]}
+        root={{ values: [6, 6], sequence: 1 }}
+        right={[{ values: [6, 3], sequence: 2 }, { values: [3, 2], sequence: 3 }]}
       />
     )
     .add('3 pieces', () =>

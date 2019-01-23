@@ -2,6 +2,7 @@ div.board {
 	width: 100vw;
 	max-width: 1024px;
 	height: 90vh;
+	max-height: 60em;
 	position: relative;
 }
 
@@ -11,8 +12,8 @@ div.dplayer {
 	height: 15em;
 }
 
-div.dplayer.active {
-	background-color: #d88fc466;
+div.dplayer.active .name {
+	background-color: rgba(217, 66, 244, 0.5);
 }
 
 div.dplayer button {
@@ -28,24 +29,21 @@ div.p0 {
 }
 
 div.p1 {
-	transform: rotate(-90deg) translateY(-15em) translateX(-16.5em);
-	transform-origin: right top;
+	transform: rotate(-90deg) translateX(-5em) translateY(-3em);
+	transform-origin: bottom right;
 	top: 0;
 	right: 0;
-	bottom: 0;
 }
 
 div.p2 {
 	left: 100px;
 	right: 100px;
-	bottom: 0;
+	bottom: 3em;
 }
 
 div.p3 {
-	transform: translateY(7em) translateX(5em) rotate(90deg);
-	transform-origin: left bottom;
+	transform: translateY(5em) translateX(3em) rotate(90deg);
+	transform-origin: bottom left;
 	left: 0;
-	height: 100px;
 	top: 0;
-	bottom: 0;
 }

@@ -1,5 +1,5 @@
 import { AI } from '@djmax/boardgame.io/ai';
-import getPlayablePieces from './options';
+import LogicalBoard from '../lib/LogicalBoard';
 
 export function enumerate(G, ctx) {
   const { board, players } = G;
@@ -12,7 +12,7 @@ export function enumerate(G, ctx) {
       .filter(p => p.values[0] === 6 && p.values[1] === 6)
       .map(p => ({ move: 'playDomino', args: [p] }));
   }
-  const possibles = getPlayablePieces(board);
+  const possibles = new LogicalBoard(board).validPieces;
   const pieces = player.hand
     .filter(p => possibles.includes(p.values[0]) || possibles.includes(p.values[1]));
   if (pieces.length > 0) {

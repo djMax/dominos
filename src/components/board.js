@@ -2,8 +2,8 @@ import React from 'react';
 import { Hand } from './hand';
 import { PlayedTiles } from './played-tiles';
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
-import getPlayablePieces from '../game/options';
 import { enumerate } from '../game/ai';
+import LogicalBoard from '../lib/LogicalBoard';
 
 export class DominoBoard extends React.Component {
   playPiece = (piece) => {
@@ -25,6 +25,11 @@ export class DominoBoard extends React.Component {
     moves.takeHand();
   }
 
+  handleClose = () => {
+    const { moves } = this.props;
+    moves.continue();
+  }
+
   renderHand(player) {
     const { G: { board, pieces, players, playerTypes }, playerID, ctx: { phase }, isActive } = this.props;
     if (phase === 'draw' && isActive && String(player) === String(playerID)) {
@@ -42,7 +47,7 @@ export class DominoBoard extends React.Component {
     if (String(player) === String(playerID)) {
       hand.onClick = this.playPiece;
       if (board.root && isActive) {
-        const possible = getPlayablePieces(board);
+        const possible = new LogicalBoard(board).validPieces;
         if (!players[player].hand.find(p => possible.includes(p.values[0]) || possible.includes(p.values[1]))) {
           hand.onPass = this.pass;
         }
@@ -62,7 +67,7 @@ export class DominoBoard extends React.Component {
   }
 
   render() {
-    const { ctx: { phase, currentPlayer }, G: { board, winner, points } } = this.props;
+    const { ctx: { phase, currentPlayer }, G: { board, completed } } = this.props;
 
     return (
       <div className="board">
@@ -76,7 +81,7 @@ export class DominoBoard extends React.Component {
             <DialogTitle id="alert-dialog-title">Game Over</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Player {winner} has won. Their team gets {points} points.
+                Player {completed.winner} has won. Their team gets {completed.points} points.
               </DialogContentText>
             </DialogContent>
             <DialogActions>

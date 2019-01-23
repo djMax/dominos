@@ -1,4 +1,8 @@
 .name {
   position: absolute;
-  top: 15em;
+  font-weight: bold;
+  font-size: 24px;
+  top: 5.8em;
+  padding: .25em;
+  border-radius: 6px;
 }

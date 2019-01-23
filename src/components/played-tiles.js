@@ -8,12 +8,24 @@ function isDouble(piece) {
   return piece && piece.values[0] === piece.values[1];
 }
 
+const DominoPiece = ({ piece, maxSequence, isRight }) => (
+  <Domino
+    first={piece.values[isRight ? 1 : 0]}
+    second={piece.values[isRight ? 0 : 1]}
+    by={Number(piece.by) + 1}
+    sequence={piece.sequence}
+    highlight={piece.sequence === maxSequence}
+  />
+);
+
 export class PlayedTiles extends React.Component {
   render() {
     const { root, left, right } = this.props;
 
     const rootTransform = { zIndex: 29 };
     const start = { y: -6, rx: 0, lx: 0 };
+    const maxSequence = root ? [root, ...left || [], ...right || []].reduce((prev, cur) => Math.max(prev, cur.sequence), 0) : 0;
+
     if (isDouble(root)) {
       rootTransform.transform = 'translate(-2em,-3em)';
       Object.assign(start, { rx: 7.6, lx: 1, y: -3 });
@@ -31,15 +43,15 @@ export class PlayedTiles extends React.Component {
           className="rootTile"
           style={rootTransform}
         >
-          <Domino first={root.values[0]} second={root.values[1]} />
+          <DominoPiece piece={root} maxSequence={maxSequence} />
         </div>}
         {left && left.map(p =>
-          <div style={leftLayout.getTransform(p)}>
-            <Domino first={p.values[0]} second={p.values[1]} />
+          <div key={p.values.join('-')} style={leftLayout.getTransform(p)}>
+            <DominoPiece piece={p} maxSequence={maxSequence} />
           </div>)}
         {right && right.map(p =>
           <div style={rightLayout.getTransform(p)}>
-            <Domino first={p.values[1]} second={p.values[0]} />
+            <DominoPiece piece={p} maxSequence={maxSequence} isRight />
           </div>)}
       </div>
     )
