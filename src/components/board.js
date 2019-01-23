@@ -3,7 +3,7 @@ import { Hand } from './hand';
 import { PlayedTiles } from './played-tiles';
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import { enumerate } from '../game/ai';
-import LogicalBoard from '../lib/LogicalBoard';
+import LogicalBoard from '../model/LogicalBoard';
 
 export class DominoBoard extends React.Component {
   playPiece = (piece) => {

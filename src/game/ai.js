@@ -1,5 +1,5 @@
 import { AI } from '@djmax/boardgame.io/ai';
-import LogicalBoard from '../lib/LogicalBoard';
+import LogicalBoard from '../model/LogicalBoard';
 
 export function enumerate(G, ctx) {
   const { board, players } = G;

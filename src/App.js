@@ -1,12 +1,14 @@
 import React from 'react';
 import logger from 'redux-logger';
-import classnames from 'classnames';
 import { applyMiddleware } from 'redux';
+import { Subscribe } from 'unstated';
 import { Client } from '@djmax/boardgame.io/react';
-import { Tab, Tabs, AppBar, withStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import { Dominos } from './game';
 import { DominoBoard } from './components/board';
-import ai from './game/ai';
+import MultiplayerContainer from './components/MultiplayerContainer';
+import SignIn from './components/Signin';
+import OrganizeGame from './components/OrganizeGame';
 
 import './App.css';
 
@@ -25,6 +27,25 @@ const styles = {
   },
 };
 
+class DominoApp extends React.Component {
+  state = {}
+
+  go = (players) => {
+    this.setState({ gameID: this.props.multiplayer.state.name });
+  }
+
+  render() {
+    const { multiplayer, playerID } = this.props;
+    const { gameID } = this.state;
+    return (
+      <React.Fragment>
+        {gameID ? <DominoClient playerID={playerID} gameID={gameID} /> : <OrganizeGame onReady={this.go}/> }
+        {!multiplayer.state.name && <SignIn />}
+      </React.Fragment>
+    );
+  }
+}
+
 class App extends React.Component {
   state = {
     selectedPlayer: 0,
@@ -34,49 +55,14 @@ class App extends React.Component {
     this.setState({ selectedPlayer: value });
   }
 
-  renderAllHands() {
-    const { selectedPlayer } = this.state;
-    const { classes } = this.props;
-    return (
-      <div>
-        <AppBar position="static">
-          <Tabs value={selectedPlayer} onChange={this.changePlayer}>
-            <Tab label="Player 1" />
-            <Tab label="Player 2" />
-            <Tab label="Player 3" />
-            <Tab label="Player 4" />
-          </Tabs>
-        </AppBar>
-        <div className={classnames({ [classes.hidden]: selectedPlayer !== 0 })}>
-          <DominoClient playerID="0" />
-        </div>
-        <div className={classnames({ [classes.hidden]: selectedPlayer !== 1 })}>
-          <DominoClient playerID="1" />
-        </div>
-        <div className={classnames({ [classes.hidden]: selectedPlayer !== 2 })}>
-          <DominoClient playerID="2" />
-        </div>
-        <div className={classnames({ [classes.hidden]: selectedPlayer !== 3 })}>
-          <DominoClient playerID="3" />
-        </div>
-      </div>
-    );
-  }
-
-  renderOneHand() {
-    const { selectedPlayer } = this.state;
-    const { classes } = this.props;
-    return (
-      <div>
-        <div className={classnames({ [classes.hidden]: selectedPlayer !== 0 })}>
-          <DominoClient playerID="0" />
-        </div>
-      </div>
-    );
-  }
-
   render() {
-    return this.renderOneHand();
+    return (
+      <Subscribe to={[MultiplayerContainer]}>
+      {multiplayer => (
+        <DominoApp multiplayer={multiplayer} playerID="0" />
+      )}
+      </Subscribe>
+    );
   }
 }
 export default withStyles(styles)(App);

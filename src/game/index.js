@@ -1,7 +1,7 @@
 import { Game, PlayerView, INVALID_MOVE } from '@djmax/boardgame.io/core';
 import isGameDone from './done';
 import { scoreHand } from './scoreHand';
-import LogicalBoard from '../lib/LogicalBoard';
+import LogicalBoard from '../model/LogicalBoard';
 
 function isSamePiece(p1, p2) {
   if (p1.values[0] === p2.values[0] && p1.values[1] === p2.values[1]) {
@@ -115,7 +115,7 @@ export const Dominos = Game({
           }
         },
         endPhaseIf(G) {
-          return G.board.ack === G.playerTypes.filter(p => p === 'human').length;
+          return G.board.ack === G.playerTypes.filter(p => p.startsWith('human')).length;
         },
       },
     },
