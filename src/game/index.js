@@ -17,7 +17,7 @@ export const Dominos = Game({
   name: 'Dominos',
   playerView: PlayerView.STRIP_SECRETS,
 
-  setup(ctx) {
+  setup(ctx, { players }) {
     return {
       secret: {
       },
@@ -25,7 +25,7 @@ export const Dominos = Game({
         '0and2': 0,
         '1and3': 0,
       },
-      playerTypes: ['human', 'ai', 'ai', 'ai'],
+      playerTypes: players || ['human', 'ai', 'ai', 'ai'],
       players: {},
       pieces: [0, 0, 0, 0],
     };

@@ -66,6 +66,10 @@ export default class MultiplayerContainer extends Container {
         ...state,
       };
     });
-    this.setState({ others: updatedOthers });
+    this.setState({ id: api.socket.id, others: updatedOthers });
+  }
+
+  onNewGame({ gameID, players }) {
+    console.log('NEW GAME');
   }
 }

@@ -10,6 +10,7 @@ import MultiplayerContainer from './components/MultiplayerContainer';
 import SignIn from './components/Signin';
 import OrganizeGame from './components/OrganizeGame';
 
+import 'isomorphic-fetch';
 import './App.css';
 
 const DominoClient = Client({
@@ -30,8 +31,21 @@ const styles = {
 class DominoApp extends React.Component {
   state = {}
 
-  go = (players) => {
-    this.setState({ gameID: this.props.multiplayer.state.name });
+  go = async (playersRaw) => {
+    const players = playersRaw.map((p) => {
+      if (p === 'human') {
+        return `human:${this.props.multiplayer.state.id}`;
+      }
+      return p;
+    });
+    const response = await fetch('/games/Dominos/create', {
+      method: 'POST',
+      body: JSON.stringify({ setupData: { players }, numPlayers: 4 }),
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+    });
+    const { gameID } = await response.json();
+    this.setState({ gameID });
   }
 
   render() {

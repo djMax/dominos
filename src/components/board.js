@@ -53,7 +53,8 @@ export class DominoBoard extends React.Component {
         }
       }
     }
-    if (isActive && playerTypes[player] !== 'human' && String(player) === String(playerID)
+    /*
+    if (isActive && !playerTypes[player].startsWith('human') && String(player) === String(playerID)
       && phase === 'play') {
       const validMoves = enumerate(this.props.G, this.props.ctx);
       console.error('AI MOVE FOR', player, validMoves);
@@ -62,7 +63,7 @@ export class DominoBoard extends React.Component {
         const [chosen] = validMoves;
         moves[chosen.move](...(chosen.args || []));
       }, 250);
-    }
+    }*/
     return <Hand {...hand} />
   }
 

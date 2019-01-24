@@ -7,7 +7,7 @@ const PlayerMenu = ({ value, onChange, index, multiplayer }) => (
   <Select
     displayEmpty
     value={value}
-    onChange={({ target: { value } }) => onChange(index, value)}
+    onChange={({ target: { value } }) => onChange(multiplayer, index, value)}
     inputProps={{
       name: `player${index}`,
       id: `player${index}-simple`,
@@ -20,14 +20,13 @@ const PlayerMenu = ({ value, onChange, index, multiplayer }) => (
     <em>AI Random</em>
   </MenuItem>
   {Object.entries(multiplayer.state.others)
-    .filter(([id, s]) => s.tictactoe)
     .map(([id, { name }]) => (
-      <MenuItem key={id} value={`human:${name}`}>{name}'s code</MenuItem>
+      <MenuItem key={id} value={`human:${name}`}>{name}</MenuItem>
     ))}
   {Object.entries(multiplayer.state.others)
-    .filter(([id, s]) => s.tictactoe)
+    .filter(([id, s]) => s.dominos)
     .map(([id, { name, dominos }]) => (
-      <MenuItem key={id} value={`code:${dominos}`}>{name}</MenuItem>
+      <MenuItem key={id} value={`code:${dominos}`}>{name}'s code</MenuItem>
     ))}
 </Select>
 )
@@ -39,6 +38,11 @@ class OrganizeGame extends React.Component {
 
   setPlayer = (multiplayer, index, value) => {
     const players = this.state.players.slice(0);
+    const exPlayer = players[index];
+    const existingIndex = players.findIndex(p => p === value);
+    if (existingIndex >= 0) {
+      players[existingIndex] = exPlayer;
+    }
     players[index] = value;
     this.setState({ players });
   }
