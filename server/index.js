@@ -16,3 +16,7 @@ server.run(port, () => {
 
 server.app._io.on('connection', (socket) => Connection.createConnection(socket));
 server.app.use(require('koa-static')(path.join(__dirname, '..', 'build')));
+
+process.on('unhandledRejection', error => {
+  console.log(error);
+});

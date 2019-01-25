@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, withStyles, Select, MenuItem } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, withStyles, Select, MenuItem, CircularProgress } from '@material-ui/core';
 import { Subscribe } from 'unstated';
 import MultiplayerContainer from './MultiplayerContainer';
 
@@ -92,12 +92,11 @@ class OrganizeGame extends React.Component {
                 </DialogContent>
                 <DialogActions>
                   <Button
-                    loading={loading}
                     variant="contained"
                     onClick={() => this.play(multiplayer)}
                     color="primary"
                   >
-                  Let's Play
+                  {loading ? <CircularProgress size={14} /> : <div>Let's Play</div>}
                   </Button>
                 </DialogActions>
           </Dialog>

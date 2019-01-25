@@ -17,7 +17,7 @@ export const Dominos = Game({
   name: 'Dominos',
   playerView: PlayerView.STRIP_SECRETS,
 
-  setup(ctx, { players }) {
+  setup(ctx, { players } = {}) {
     return {
       secret: {
       },
@@ -123,8 +123,8 @@ export const Dominos = Game({
 
   moves: {
     playDomino(G, ctx, piece) {
-      const player = ctx.currentPlayer;
-      console.log(`Player ${player} is playing ${piece.values}`);
+      const player = Number(ctx.currentPlayer);
+      console.log(`Player ${player + 1} is playing ${piece.values}`);
       try {
         G.board = LogicalBoard.getNewBoard(G.board, player, piece);
       } catch (error) {
