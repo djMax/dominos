@@ -12,12 +12,23 @@ import OrganizeGame from './components/OrganizeGame';
 
 import 'isomorphic-fetch';
 import './App.css';
+import { sendMove } from './game/ai';
 
 const styles = {
   hidden: {
     display: 'none',
   },
 };
+
+async function apiCall(url, body) {
+  const response = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
+  });
+  return response.json().catch(e => e);
+}
 
 class DominoApp extends React.Component {
   clients = {}
@@ -35,24 +46,28 @@ class DominoApp extends React.Component {
       }
       return p;
     });
-    const response = await fetch('/games/Dominos/create', {
-      method: 'POST',
-      body: JSON.stringify({ setupData: { players }, numPlayers: 4 }),
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'same-origin',
+    this.props.multiplayer.broadcast({
+      type: 'NewGame',
+      players,
     });
-    const { gameID } = await response.json();
-    const joinResponse = await fetch(`/games/Dominos/${gameID}/join`, {
-      method: 'POST',
-      body: JSON.stringify({
-        playerID: playersRaw.indexOf('human'),
-        playerName: this.props.multiplayer.state.name,
-      }),
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'same-origin',
+    const { gameID } = await apiCall('/games/Dominos/create', { setupData: { players }, numPlayers: 4 });
+    const joinUrl = `/games/Dominos/${gameID}/join`;
+    const join = await apiCall(joinUrl, {
+      playerID: playersRaw.indexOf('human'),
+      playerName: this.props.multiplayer.state.name,
     });
-    const join = await joinResponse.json();
-    this.setState({ gameID, gameMaster: true, players: playersRaw, credentials: join.playerCredentials });
+    const aiCredentials = {};
+    const aiPlayers = players
+      .map((player, index) => ({ player, index }))
+      .filter(p => !p.player.startsWith('human'));
+    await Promise.all(aiPlayers.map(async ({ player, index}) => {
+      // TODO pick a better player name
+      const { playerCredentials } = await apiCall(joinUrl, { playerID: index, playerName: 'AI' });
+      aiCredentials[index] = playerCredentials;
+    }));
+    const newState = { gameID, gameMaster: true, players: playersRaw, credentials: join.playerCredentials, aiCredentials };
+    window.localStorage.setItem('dominos.currentGame', JSON.stringify(newState));
+    this.setState(newState);
   }
 
   render() {
@@ -60,7 +75,7 @@ class DominoApp extends React.Component {
     const { gameID, credentials, gameMaster } = this.state;
 
     if (gameID && !this.clients[gameID]) {
-      this.clients[gameID] = Client({
+      const clientArgs = {
         game: Dominos,
         board: DominoBoard,
         multiplayer: { server: '' },
@@ -69,14 +84,27 @@ class DominoApp extends React.Component {
         enhancer: applyMiddleware(logger, ({ getState }) => next => action => {
           if (gameMaster && (action.type === 'SYNC' || action.type === 'UPDATE')) {
             const { currentPlayer } = action.state.ctx;
-            const { players } = this.state;
+            const { players, aiCredentials } = this.state;
             if (!players[currentPlayer].startsWith('human')) {
-              console.error('Need to trigger a move for', currentPlayer, players[currentPlayer]);
+              apiCall(`/games/Dominos/${gameID}/getHand`, {
+                playerID: currentPlayer,
+                credentials: aiCredentials[currentPlayer],
+              }).then(({ hand }) => {
+                sendMove({
+                  gameID,
+                  multiplayer,
+                  hand,
+                  action,
+                  players,
+                  credentials: aiCredentials[currentPlayer],
+                });
+              });
             }
           }
           return next(action);
         }),
-      })
+      };
+      this.clients[gameID] = Client(clientArgs);
     }
     const DominoClient = this.clients[gameID];
 

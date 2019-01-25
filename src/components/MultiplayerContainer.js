@@ -31,6 +31,10 @@ export default class MultiplayerContainer extends Container {
     this.setState({ name });
   }
 
+  sendRaw = (message, payload, room) => {
+    api.sendRaw(message, payload, room);
+  }
+
   signOut = () => this.setState({ name: null })
 
   newCode = (game, code) => {
@@ -47,6 +51,10 @@ export default class MultiplayerContainer extends Container {
         },
       },
     });
+  }
+
+  broadcast = (message) => {
+    api.sendBroadcast(message);
   }
 
   onBroadcast(id, message) {
