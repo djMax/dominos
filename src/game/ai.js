@@ -1,12 +1,10 @@
+import openSocket from 'socket.io-client';
 import { AI } from '@djmax/boardgame.io/ai';
-import LogicalBoard from '../lib/LogicalBoard';
+import LogicalBoard from '../model/LogicalBoard';
 
 export function enumerate(G, ctx) {
   const { board, players } = G;
   const player = Object.values(players || {})[0];
-  if (!player) {
-    return [{ move: 'takeHand' }];
-  }
   if (!board.root) {
     return player.hand
       .filter(p => p.values[0] === 6 && p.values[1] === 6)
@@ -23,4 +21,35 @@ export function enumerate(G, ctx) {
 
 export default function ai() {
   return AI({ enumerate });
+}
+
+export function sendMove({ action, players, credentials, hand, gameID }) {
+  const { currentPlayer } = action.state.ctx;
+  const { board } = action.state.G;
+
+  const possibles = new LogicalBoard(board).validPieces;
+  const pieces = hand.filter(p => possibles.includes(p[0]) || possibles.includes(p[1]));
+  const message = {
+    type: 'MAKE_MOVE',
+    payload: {
+      type: 'playDomino',
+      args: [],
+      playerID: currentPlayer,
+      credentials,
+    }
+  };
+  if (pieces.length > 0) {
+    message.payload.args.push({ values: pieces[0] });
+    console.log(currentPlayer, 'will play', message.payload.args[0]);
+  } else {
+    message.payload.type = 'pass';
+    console.log(currentPlayer, 'will pass');
+  }
+  const socket = openSocket('/Dominos');
+  socket.once('connect', () => {
+    setTimeout(() => {
+      socket.emit('update', message, action.state._stateID || 0, `Dominos:${gameID}`, currentPlayer);
+      socket.disconnect();
+    }, 500);
+  });
 }

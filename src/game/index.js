@@ -1,7 +1,7 @@
 import { Game, PlayerView, INVALID_MOVE } from '@djmax/boardgame.io/core';
 import isGameDone from './done';
 import { scoreHand } from './scoreHand';
-import LogicalBoard from '../lib/LogicalBoard';
+import LogicalBoard from '../model/LogicalBoard';
 
 function isSamePiece(p1, p2) {
   if (p1.values[0] === p2.values[0] && p1.values[1] === p2.values[1]) {
@@ -17,7 +17,7 @@ export const Dominos = Game({
   name: 'Dominos',
   playerView: PlayerView.STRIP_SECRETS,
 
-  setup(ctx) {
+  setup(ctx, { players } = {}) {
     return {
       secret: {
       },
@@ -25,7 +25,7 @@ export const Dominos = Game({
         '0and2': 0,
         '1and3': 0,
       },
-      playerTypes: ['human', 'ai', 'ai', 'ai'],
+      playerTypes: players || ['human', 'ai', 'ai', 'ai'],
       players: {},
       pieces: [0, 0, 0, 0],
     };
@@ -115,7 +115,7 @@ export const Dominos = Game({
           }
         },
         endPhaseIf(G) {
-          return G.board.ack === G.playerTypes.filter(p => p === 'human').length;
+          return G.board.ack === G.playerTypes.filter(p => p.startsWith('human')).length;
         },
       },
     },
@@ -123,8 +123,8 @@ export const Dominos = Game({
 
   moves: {
     playDomino(G, ctx, piece) {
-      const player = ctx.currentPlayer;
-      console.log(`Player ${player} is playing ${piece.values}`);
+      const player = Number(ctx.currentPlayer);
+      console.log(`Player ${player + 1} is playing ${piece.values}`);
       try {
         G.board = LogicalBoard.getNewBoard(G.board, player, piece);
       } catch (error) {
