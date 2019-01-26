@@ -2,7 +2,6 @@ import React from 'react';
 import { Hand } from './hand';
 import { PlayedTiles } from './played-tiles';
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
-import { enumerate } from '../game/ai';
 import LogicalBoard from '../model/LogicalBoard';
 
 export class DominoBoard extends React.Component {
@@ -31,7 +30,7 @@ export class DominoBoard extends React.Component {
   }
 
   renderHand(player) {
-    const { G: { board, pieces, players, playerTypes }, playerID, ctx: { phase }, isActive } = this.props;
+    const { G: { board, pieces, players }, playerID, ctx: { phase }, isActive } = this.props;
     if (phase === 'draw' && isActive && String(player) === String(playerID)) {
       return (
         <Button

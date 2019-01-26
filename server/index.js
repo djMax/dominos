@@ -15,7 +15,6 @@ server.run(port, () => {
   logger.info('Ready');
 });
 
-console.error('DB IS', server.app.context.db);
 server.app._io.on('connection', (socket) => Connection.createConnection(socket));
 server.app.use(require('koa-static')(path.join(__dirname, '..', 'build')));
 
