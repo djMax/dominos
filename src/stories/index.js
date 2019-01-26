@@ -7,7 +7,7 @@ import { withKnobs, number } from '@storybook/addon-knobs/react';
 import { Domino } from '../components/domino';
 import { Hand } from '../components/hand';
 import { PlayedTiles } from '../components/played-tiles';
-import { DominoBoard } from '../components/board';
+import DominoBoard from '../components/board';
 
 const dRange = { range: true, min: 0, max: 6, step: 1 };
 

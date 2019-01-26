@@ -5,7 +5,7 @@ import { Subscribe } from 'unstated';
 import { Client } from '@djmax/boardgame.io/react';
 import { withStyles, Button } from '@material-ui/core';
 import { Dominos } from './game';
-import { DominoBoard } from './components/board';
+import DominoBoard from './components/board';
 import MultiplayerContainer from './components/MultiplayerContainer';
 import SignIn from './components/Signin';
 import OrganizeGame from './components/OrganizeGame';

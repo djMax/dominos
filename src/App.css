@@ -1,6 +1,6 @@
 div.board {
 	width: 100vw;
-	max-width: 1024px;
+	max-width: 1280px;
 	height: 100vh;
 	max-height: 60em;
 	position: relative;
@@ -38,7 +38,7 @@ div.p1 {
 div.p2 {
 	left: 100px;
 	right: 100px;
-	bottom: 3em;
+	bottom: 4em;
 }
 
 div.p3 {

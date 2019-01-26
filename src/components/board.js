@@ -1,18 +1,45 @@
 import React from 'react';
 import { Hand } from './hand';
 import { PlayedTiles } from './played-tiles';
-import { Button } from '@material-ui/core';
+import { Button, withStyles, Snackbar } from '@material-ui/core';
 import LogicalBoard from '../model/LogicalBoard';
 import { Subscribe } from 'unstated';
 import MultiplayerContainer from './MultiplayerContainer';
 import Result from './result';
 import Score from './score';
 
-export class DominoBoard extends React.Component {
+const styles = theme => ({
+  ambiguous: {
+    '&>div': {
+      backgroundColor: theme.palette.error.dark,
+    },
+  }
+});
+
+class DominoBoard extends React.Component {
+  state = {}
+
   playPiece = (piece) => {
-    const { moves, isActive } = this.props;
+    const { moves, isActive, G: { board } } = this.props;
+    const possible = new LogicalBoard(board).validPieces;
+    if (possible.length === 2 && piece.values[0] !== piece.values[1]
+      && possible.includes(piece.values[0]) && possible.includes(piece.values[1])) {
+      this.setState({ piece });
+      return;
+    }
     if (isActive) {
       moves.playDomino(piece);
+      this.setState({ side: null, piece: null });
+    }
+  }
+
+  onEndClick = (clickedPiece, side) => {
+    const { moves, isActive } = this.props;
+    const { piece } = this.state;
+
+    if (isActive) {
+      moves.playDomino(piece, side === 'left');
+      this.setState({ piece: null });
     }
   }
 
@@ -47,7 +74,7 @@ export class DominoBoard extends React.Component {
       id: playerTypes[player],
       pieces: players[player] ? players[player].hand : pieces[player],
     };
-    if (String(player) === String(playerID)) {
+    if (String(player) === String(playerID) && phase === 'play') {
       hand.onClick = this.playPiece;
       if (board.root && isActive) {
         const possible = new LogicalBoard(board).validPieces;
@@ -64,7 +91,8 @@ export class DominoBoard extends React.Component {
   }
 
   render() {
-    const { ctx: { phase, currentPlayer }, G: { scores, board, completed } } = this.props;
+    const { ctx: { phase, currentPlayer }, G: { scores, board, completed }, classes } = this.props;
+    const { piece } = this.state;
 
     return (
       <div className="board">
@@ -81,9 +109,24 @@ export class DominoBoard extends React.Component {
         <div className={`dplayer p3 ${currentPlayer === '3' ? 'active' : ''}`}>
           {this.renderHand(3)}
         </div>
-        <PlayedTiles {...board}/>
+        <PlayedTiles {...board} onEndClick={this.onEndClick} />
         <Score ns={scores.ns} ew={scores.ew} />
-      </div>
+        <Snackbar
+          className={classes.ambiguous}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          open={!!piece}
+          autoHideDuration={6000}
+          ContentProps={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">Click the end of the board on which this piece should be played.</span>}
+        />
+        </div>
     );
   }
 }
+
+export default withStyles(styles)(DominoBoard);

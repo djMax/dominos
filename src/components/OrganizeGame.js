@@ -95,7 +95,6 @@ class OrganizeGame extends React.Component {
                 </DialogContent>
                 <DialogActions>
                   <Button
-                    loading={loading}
                     variant="contained"
                     onClick={() => this.play(multiplayer)}
                     color="primary"
