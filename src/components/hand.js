@@ -9,8 +9,28 @@ function sorted(pieces) {
   return new PlayerHand(0, pieces).hand;
 }
 
-export const Hand = ({ pieces, name, onClick, onPass, ...rest }) => {
+function defaultName(v) {
+  switch (v) {
+    case 'random':
+      return 'AI (Random)';
+    case 'highest':
+      return 'AI (Highest Piece)';
+    default:
+      return '???';
+  }
+}
+
+export const Hand = ({ pieces, id, multiplayer, onClick, onPass, ...rest }) => {
   let finalHand = Array.isArray(pieces) ? sorted(pieces) : Array(pieces).fill({ values: [undefined, undefined] });
+  let name = defaultName(id);
+  if (id.startsWith('human:')) {
+    const mpId = id.substring('human:'.length);
+    if (mpId === multiplayer.state.id) {
+      name = multiplayer.state.name;
+    } else {
+      name = mpId;
+    }
+  }
   return (
     <div className="hand" {...rest}>
       {finalHand.map((p, ix) => <Domino

@@ -43,7 +43,7 @@ export class PlayedTiles extends React.Component {
           className="rootTile"
           style={rootTransform}
         >
-          <DominoPiece piece={root} maxSequence={maxSequence} />
+          <DominoPiece piece={root} maxSequence={maxSequence} isRight />
         </div>}
         {left && left.map(p =>
           <div key={p.values.join('-')} style={leftLayout.getTransform(p)}>

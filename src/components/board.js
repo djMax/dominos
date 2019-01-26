@@ -1,8 +1,12 @@
 import React from 'react';
 import { Hand } from './hand';
 import { PlayedTiles } from './played-tiles';
-import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import LogicalBoard from '../model/LogicalBoard';
+import { Subscribe } from 'unstated';
+import MultiplayerContainer from './MultiplayerContainer';
+import Result from './result';
+import Score from './score';
 
 export class DominoBoard extends React.Component {
   playPiece = (piece) => {
@@ -24,13 +28,13 @@ export class DominoBoard extends React.Component {
     moves.takeHand();
   }
 
-  handleClose = () => {
+  nextGame = () => {
     const { moves } = this.props;
     moves.continue();
   }
 
   renderHand(player) {
-    const { G: { board, pieces, players }, playerID, ctx: { phase }, isActive } = this.props;
+    const { G: { board, pieces, players, playerTypes }, playerID, ctx: { phase }, isActive } = this.props;
     if (phase === 'draw' && isActive && String(player) === String(playerID)) {
       return (
         <Button
@@ -40,7 +44,7 @@ export class DominoBoard extends React.Component {
       );
     }
     const hand = {
-      name: `Player ${player + 1}`,
+      id: playerTypes[player],
       pieces: players[player] ? players[player].hand : pieces[player],
     };
     if (String(player) === String(playerID)) {
@@ -52,45 +56,19 @@ export class DominoBoard extends React.Component {
         }
       }
     }
-    /*
-    if (isActive && !playerTypes[player].startsWith('human') && String(player) === String(playerID)
-      && phase === 'play') {
-      const validMoves = enumerate(this.props.G, this.props.ctx);
-      console.error('AI MOVE FOR', player, validMoves);
-      setTimeout(() => {
-        const { moves } = this.props;
-        const [chosen] = validMoves;
-        moves[chosen.move](...(chosen.args || []));
-      }, 250);
-    }*/
-    return <Hand {...hand} />
+    return (
+      <Subscribe to={[MultiplayerContainer]}>
+        {multiplayer => <Hand {...hand} multiplayer={multiplayer} />}
+      </Subscribe>
+    );
   }
 
   render() {
-    const { ctx: { phase, currentPlayer }, G: { board, completed } } = this.props;
+    const { ctx: { phase, currentPlayer }, G: { scores, board, completed } } = this.props;
 
     return (
       <div className="board">
-        {phase === 'score' && (
-          <Dialog
-            open
-            onClose={this.nextRound}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">Game Over</DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Player {completed.winner} has won. Their team gets {completed.points} points.
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={this.handleClose} color="primary" autoFocus>
-                Ok
-              </Button>
-            </DialogActions>
-          </Dialog>
-        )}
+        {phase === 'score' && <Result {...completed} onNext={this.nextGame} />}
         <div className={`dplayer p0 ${currentPlayer === '0' ? 'active' : ''}`}>
           {this.renderHand(0)}
         </div>
@@ -104,6 +82,7 @@ export class DominoBoard extends React.Component {
           {this.renderHand(3)}
         </div>
         <PlayedTiles {...board}/>
+        <Score ns={scores.ns} ew={scores.ew} />
       </div>
     );
   }

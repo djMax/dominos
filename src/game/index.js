@@ -22,8 +22,8 @@ export const Dominos = Game({
       secret: {
       },
       scores: {
-        '0and2': 0,
-        '1and3': 0,
+        ns: 0,
+        ew: 0,
       },
       playerTypes: players || ['human', 'ai', 'ai', 'ai'],
       players: {},
@@ -35,12 +35,12 @@ export const Dominos = Game({
     startingPhase: 'play',
     movesPerTurn: 1,
 
-    optimisticUpdate(G, ctx, move) {
-      return ctx.phase !== 'draw';
-    },
-
     turnOrder: {
-      first(G) {
+      first(G, ctx) {
+        if (ctx.phase === 'score') {
+          return 0;
+        }
+
         // TODO if some team won, let them start
         // Find the double six...
         const owner = Object.entries(G.players)
@@ -98,7 +98,8 @@ export const Dominos = Game({
                 winner = thisPlayer;
               }
             }
-            debugger;
+          } else {
+            winner = winner[0];
           }
           if (["0","2"].includes(String(winner))) {
             G.completed = {
@@ -106,15 +107,18 @@ export const Dominos = Game({
               points: pointTotals[1] + pointTotals[3],
               hands: [...players[1].hand, ...players[3].hand],
             };
+            G.scores.ns += G.completed.points;
           } else {
             G.completed = {
               winner,
               points: pointTotals[0] + pointTotals[2],
               hands: [...players[0].hand, ...players[2].hand],
             };
+            G.scores.ew += G.completed.points;
           }
         },
         endPhaseIf(G) {
+          console.log('Check for score phase end');
           return G.board.ack === G.playerTypes.filter(p => p.startsWith('human')).length;
         },
       },
@@ -146,6 +150,7 @@ export const Dominos = Game({
     },
 
     continue(G, ctx) {
+      console.log('Continue called');
       G.board.ack = (G.board.ack || 0) + 1;
     }
   },

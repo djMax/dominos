@@ -23,12 +23,32 @@ export default function ai() {
   return AI({ enumerate });
 }
 
+function chooseRandom(pieces) {
+  const ix = parseInt(Math.random() * pieces.length);
+  return pieces[ix];
+}
+
+function chooseHighest(pieces) {
+  let maxPiece;
+  let maxPips = -1;
+  pieces.forEach((p) => {
+    const pv = p[0] + p[1];
+    if (pv === maxPips) {
+      if (Math.max(maxPiece[0], maxPiece[1]) < Math.max(p[0], p[1])) {
+        maxPiece = p;
+      }
+    } else if (pv > maxPips) {
+      maxPiece = p;
+      maxPips = pv;
+    }
+  });
+  return maxPiece;
+}
+
 export function sendMove({ action, players, credentials, hand, gameID }) {
-  const { currentPlayer } = action.state.ctx;
+  const { currentPlayer, phase } = action.state.ctx;
   const { board } = action.state.G;
 
-  const possibles = new LogicalBoard(board).validPieces;
-  const pieces = hand.filter(p => possibles.includes(p[0]) || possibles.includes(p[1]));
   const message = {
     type: 'MAKE_MOVE',
     payload: {
@@ -38,12 +58,27 @@ export function sendMove({ action, players, credentials, hand, gameID }) {
       credentials,
     }
   };
-  if (pieces.length > 0) {
-    message.payload.args.push({ values: pieces[0] });
-    console.log(currentPlayer, 'will play', message.payload.args[0]);
+
+  if (phase === 'score') {
+    message.payload = 'continue';
   } else {
-    message.payload.type = 'pass';
-    console.log(currentPlayer, 'will pass');
+    const possibles = new LogicalBoard(board).validPieces;
+    const pieces = hand.filter(p => possibles.includes(p[0]) || possibles.includes(p[1]));
+    if (pieces.length > 0) {
+      let piece;
+      if (players[currentPlayer] === 'random') {
+        piece = chooseRandom(pieces);
+      } else if (players[currentPlayer] === 'highest') {
+        piece = chooseHighest(pieces);
+      } else {
+        piece = pieces[0];
+      }
+      message.payload.args.push({ values: piece });
+      console.log(currentPlayer, 'will play', message.payload.args[0]);
+    } else {
+      message.payload.type = 'pass';
+      console.log(currentPlayer, 'will pass');
+    }
   }
   const socket = openSocket('/Dominos');
   socket.once('connect', () => {

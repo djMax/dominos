@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, withStyles, Select, MenuItem, CircularProgress } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, withStyles, Select, MenuItem } from '@material-ui/core';
 import { Subscribe } from 'unstated';
 import MultiplayerContainer from './MultiplayerContainer';
 
@@ -18,6 +18,9 @@ const PlayerMenu = ({ value, onChange, index, multiplayer }) => (
   </MenuItem>
   <MenuItem value="random">
     <em>AI Random</em>
+  </MenuItem>
+  <MenuItem value="highest">
+    <em>AI Highest Piece</em>
   </MenuItem>
   {Object.entries(multiplayer.state.others)
     .map(([id, { name }]) => (
@@ -92,11 +95,12 @@ class OrganizeGame extends React.Component {
                 </DialogContent>
                 <DialogActions>
                   <Button
+                    loading={loading}
                     variant="contained"
                     onClick={() => this.play(multiplayer)}
                     color="primary"
                   >
-                  {loading ? <CircularProgress size={14} /> : <div>Let's Play</div>}
+                  Let's Play
                   </Button>
                 </DialogActions>
           </Dialog>

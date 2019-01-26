@@ -81,28 +81,30 @@ class DominoApp extends React.Component {
         multiplayer: { server: '' },
         debug: false,
         numPlayers: 4,
-        enhancer: applyMiddleware(logger, ({ getState }) => next => action => {
-          if (gameMaster && (action.type === 'SYNC' || action.type === 'UPDATE')) {
-            const { currentPlayer } = action.state.ctx;
-            const { players, aiCredentials } = this.state;
-            if (!players[currentPlayer].startsWith('human')) {
-              apiCall(`/games/Dominos/${gameID}/getHand`, {
-                playerID: currentPlayer,
-                credentials: aiCredentials[currentPlayer],
-              }).then(({ hand }) => {
-                sendMove({
-                  gameID,
-                  multiplayer,
-                  hand,
-                  action,
-                  players,
+        enhancer: applyMiddleware(
+          logger,
+          ({ getState }) => next => action => {
+            if (gameMaster && (action.type === 'SYNC' || action.type === 'UPDATE')) {
+              const { currentPlayer } = action.state.ctx;
+              const { players, aiCredentials } = this.state;
+              if (!players[currentPlayer].startsWith('human')) {
+                apiCall(`/games/Dominos/${gameID}/getHand`, {
+                  playerID: currentPlayer,
                   credentials: aiCredentials[currentPlayer],
+                }).then(({ hand }) => {
+                  sendMove({
+                    gameID,
+                    multiplayer,
+                    hand,
+                    action,
+                    players,
+                    credentials: aiCredentials[currentPlayer],
+                  });
                 });
-              });
+              }
             }
-          }
-          return next(action);
-        }),
+            return next(action);
+          }),
       };
       this.clients[gameID] = Client(clientArgs);
     }
