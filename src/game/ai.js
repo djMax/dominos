@@ -3,9 +3,10 @@ import { AI } from '@djmax/boardgame.io/ai';
 import LogicalBoard from '../model/LogicalBoard';
 
 export function enumerate(G, ctx) {
-  const { board, players } = G;
+  const { board, players, scores } = G;
   const player = Object.values(players || {})[0];
-  if (!board.root) {
+  if (!board.root && scores.ns === 0 && scores.ew === 0) {
+    // Double 6 required on overall game start
     return player.hand
       .filter(p => p.values[0] === 6 && p.values[1] === 6)
       .map(p => ({ move: 'playDomino', args: [p] }));
@@ -47,7 +48,7 @@ function chooseHighest(pieces) {
 
 export function sendMove({ action, players, credentials, hand, gameID }) {
   const { currentPlayer, phase } = action.state.ctx;
-  const { board } = action.state.G;
+  const { board, scores } = action.state.G;
 
   const message = {
     type: 'MAKE_MOVE',
@@ -59,8 +60,12 @@ export function sendMove({ action, players, credentials, hand, gameID }) {
     }
   };
 
+  const isFirstGame = scores.nw === 0 && scores.ew === 0;
   if (phase === 'score') {
     message.payload = 'continue';
+  } else if (isFirstGame && !board.root) {
+    // Double 6 required
+    message.payload.args = { values: [6, 6] };
   } else {
     const possibles = new LogicalBoard(board).validPieces;
     const pieces = hand.filter(p => possibles.includes(p[0]) || possibles.includes(p[1]));

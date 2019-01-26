@@ -1,7 +1,7 @@
 import LogicalBoard from '../model/LogicalBoard';
 
 function printPlayer([playerId, { hand }]) {
-  return `Player ${playerId + 1}: ${hand.map(p => `${p.values[0]},${p.values[1]}`).join(' ')}`
+  return `Player ${Number(playerId) + 1}: ${hand.map(p => `${p.values[0]},${p.values[1]}`).join(' ')}`
 }
 
 export default function isGameDone(G) {

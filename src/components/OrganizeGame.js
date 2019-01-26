@@ -36,7 +36,7 @@ const PlayerMenu = ({ value, onChange, index, multiplayer }) => (
 
 class OrganizeGame extends React.Component {
   state = {
-    players: ['human', 'random', 'random', 'random'],
+    players: ['human', 'highest', 'highest', 'highest'],
   }
 
   setPlayer = (multiplayer, index, value) => {
@@ -64,7 +64,7 @@ class OrganizeGame extends React.Component {
   }
 
   render() {
-    const { players, loading } = this.state;
+    const { players } = this.state;
     const { classes } = this.props;
 
     return (
