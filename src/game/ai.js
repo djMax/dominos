@@ -1,6 +1,6 @@
+import openSocket from 'socket.io-client';
 import { AI } from '@djmax/boardgame.io/ai';
 import LogicalBoard from '../model/LogicalBoard';
-import MultiplayerContainer from '../components/MultiplayerContainer';
 
 export function enumerate(G, ctx) {
   const { board, players } = G;
@@ -23,7 +23,7 @@ export default function ai() {
   return AI({ enumerate });
 }
 
-export function sendMove({ action, players, credentials, hand, multiplayer, gameID }) {
+export function sendMove({ action, players, credentials, hand, gameID }) {
   const { currentPlayer } = action.state.ctx;
   const { board } = action.state.G;
 
@@ -45,5 +45,11 @@ export function sendMove({ action, players, credentials, hand, multiplayer, game
     message.payload.type = 'pass';
     console.log(currentPlayer, 'will pass');
   }
-  multiplayer.sendRaw('update', [message, action.state._stateID || 0, `Dominos:${gameID}`, currentPlayer]);
+  const socket = openSocket('/Dominos');
+  socket.once('connect', () => {
+    setTimeout(() => {
+      socket.emit('update', message, action.state._stateID || 0, `Dominos:${gameID}`, currentPlayer);
+      socket.disconnect();
+    }, 500);
+  });
 }

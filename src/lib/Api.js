@@ -69,13 +69,6 @@ export default class Api {
     this.socket.emit(EVENT.Message, id, message);
   }
 
-  sendRaw(message, args) {
-    const tmp = openSocket(`/Dominos`);
-    tmp.once('connect', () => {
-      tmp.emit(message, ...args);
-    });
-  }
-
   disconnect() {
     console.error('Socket disconnecting');
     this.socket.disconnect();
