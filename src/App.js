@@ -13,6 +13,7 @@ import OrganizeGame from './components/OrganizeGame';
 import 'isomorphic-fetch';
 import './App.css';
 import { sendMove } from './game/ai';
+import { ApproveGame } from './components/approveGame';
 
 const styles = {
   hidden: {
@@ -39,6 +40,23 @@ class DominoApp extends React.Component {
     this.setState({ gameID: null, credentials: null });
   }
 
+  onApproval = async (approved) => {
+    const { multiplayer } = this.props;
+    const { players, gameID } = multiplayer.state.newGame;
+    if (approved) {
+      const playerID = String(players.indexOf(`human:${multiplayer.state.id}`));
+      const join = await apiCall(`/games/Dominos/${gameID}/join`, {
+        playerID,
+        playerName: this.props.multiplayer.state.name,
+      });
+      this.setState({ gameID, players, playerID, credentials: join.playerCredentials }, () => {
+        multiplayer.clearBroadcast();
+      });
+    } else {
+      multiplayer.clearBroadcast();
+    }
+  }
+
   go = async (playersRaw) => {
     const players = playersRaw.map((p) => {
       if (p === 'human') {
@@ -46,14 +64,16 @@ class DominoApp extends React.Component {
       }
       return p;
     });
+    const { gameID } = await apiCall('/games/Dominos/create', { setupData: { players }, numPlayers: 4 });
     this.props.multiplayer.broadcast({
       type: 'NewGame',
       players,
+      gameID,
     });
-    const { gameID } = await apiCall('/games/Dominos/create', { setupData: { players }, numPlayers: 4 });
     const joinUrl = `/games/Dominos/${gameID}/join`;
+    const playerID = String(playersRaw.indexOf('human'));
     const join = await apiCall(joinUrl, {
-      playerID: playersRaw.indexOf('human'),
+      playerID,
       playerName: this.props.multiplayer.state.name,
     });
     const aiCredentials = {};
@@ -65,14 +85,14 @@ class DominoApp extends React.Component {
       const { playerCredentials } = await apiCall(joinUrl, { playerID: index, playerName: 'AI' });
       aiCredentials[index] = playerCredentials;
     }));
-    const newState = { gameID, gameMaster: true, players: playersRaw, credentials: join.playerCredentials, aiCredentials };
+    const newState = { playerID, gameID, gameMaster: true, players: playersRaw, credentials: join.playerCredentials, aiCredentials };
     window.localStorage.setItem('dominos.currentGame', JSON.stringify(newState));
     this.setState(newState);
   }
 
   render() {
-    const { multiplayer, playerID } = this.props;
-    const { gameID, credentials, gameMaster } = this.state;
+    const { multiplayer } = this.props;
+    const { gameID, credentials, gameMaster, playerID } = this.state;
 
     if (gameID && !this.clients[gameID]) {
       const clientArgs = {
@@ -110,6 +130,10 @@ class DominoApp extends React.Component {
     }
     const DominoClient = this.clients[gameID];
 
+    if (multiplayer.state.newGame) {
+      return <ApproveGame multiplayer={multiplayer} onComplete={this.onApproval} />;
+    }
+
     return (
       <React.Fragment>
         {gameID ? <DominoClient playerID={playerID} gameID={gameID} credentials={credentials} /> : <OrganizeGame onReady={this.go}/> }
@@ -133,7 +157,7 @@ class App extends React.Component {
     return (
       <Subscribe to={[MultiplayerContainer]}>
       {multiplayer => (
-        <DominoApp multiplayer={multiplayer} playerID="0" />
+        <DominoApp multiplayer={multiplayer} />
       )}
       </Subscribe>
     );

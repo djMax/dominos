@@ -24,7 +24,7 @@ const PlayerMenu = ({ value, onChange, index, multiplayer }) => (
   </MenuItem>
   {Object.entries(multiplayer.state.others)
     .map(([id, { name }]) => (
-      <MenuItem key={id} value={`human:${name}`}>{name}</MenuItem>
+      <MenuItem key={id} value={`human:${id}`}>{name}</MenuItem>
     ))}
   {Object.entries(multiplayer.state.others)
     .filter(([id, s]) => s.dominos)
@@ -54,12 +54,8 @@ class OrganizeGame extends React.Component {
     const { players } = this.state;
     const { onReady } = this.props;
     this.setState({ loading: true }, () => {
-      if (players.find(p => p.startsWith('human:'))) {
-        // TODO approvals
-      } else {
-        onReady(players);
-        this.setState({ loading: false });
-      }
+      onReady(players);
+      this.setState({ loading: false });
     });
   }
 

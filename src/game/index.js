@@ -1,4 +1,4 @@
-import { Game, PlayerView, INVALID_MOVE } from '@djmax/boardgame.io/core';
+import { Game, INVALID_MOVE } from '@djmax/boardgame.io/core';
 import isGameDone from './done';
 import { scoreHand } from './scoreHand';
 import LogicalBoard from '../model/LogicalBoard';
@@ -142,6 +142,11 @@ export const Dominos = Game({
 
   moves: {
     playDomino(G, ctx, piece, placeLeft) {
+      const { scores, board } = G;
+      if (scores.ns === 0 && scores.ew === 0 && !board.root
+        && (piece.values[0] !== 6 || piece.values[1] !== 6)) {
+        return INVALID_MOVE;
+      }
       const player = Number(ctx.currentPlayer);
       console.log(`Player ${player + 1} is playing ${piece.values}`);
       try {

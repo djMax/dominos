@@ -27,6 +27,8 @@ export const Hand = ({ pieces, id, multiplayer, onClick, onPass, ...rest }) => {
     const mpId = id.substring('human:'.length);
     if (mpId === multiplayer.state.id) {
       name = multiplayer.state.name;
+    } else if (multiplayer.state.others[mpId]) {
+      name = multiplayer.state.others[mpId].name;
     } else {
       name = mpId;
     }

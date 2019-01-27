@@ -41,6 +41,10 @@ export default class MultiplayerContainer extends Container {
     api.updateState({ [game]: code });
   }
 
+  clearBroadcast = () => {
+    this.setState({ newGame: null });
+  }
+
   async onStateUpdate(id, playerState) {
     const { others } = this.state;
     await this.setState({
@@ -59,6 +63,13 @@ export default class MultiplayerContainer extends Container {
 
   onBroadcast(id, message) {
     switch (message.type) {
+      case 'NewGame':
+        if (message.players.includes(`human:${api.socket.id}`)) {
+          this.setState({
+            newGame: message,
+          });
+        }
+        break;
       default:
         console.log('Unknown message', message);
         break;
@@ -75,9 +86,5 @@ export default class MultiplayerContainer extends Container {
       };
     });
     this.setState({ id: api.socket.id, others: updatedOthers });
-  }
-
-  onNewGame({ gameID, players }) {
-    console.log('NEW GAME');
   }
 }
